@@ -44,4 +44,4 @@ Terminal:
 
 For Stages 2 (ready for outreach) and 4 (replies waiting), list each contact with company + last action date so the user knows exactly which threads to act on.
 
-**Weekly connection-request total:** count entries across all `outreach/<Company>_contacts.md` files where `Stage = 1. Connection Pending` AND `Last Action Date ≥ today − 7`. Show the count + remaining headroom, e.g. `Connection requests sent in last 7 days: 47/100 (53 remaining this week)`. Surface a warning at ≥80.
+**Connection requests sent in last 7 days:** count entries across all `outreach/<Company>_contacts.md` files where `Stage = 1. Connection Pending` AND `Last Action Date ≥ today − 7`. Show the raw count for visibility (no cap is enforced — LinkedIn's own throttling will surface as a CAPTCHA or "limit reached" notice during outreach if you hit it).

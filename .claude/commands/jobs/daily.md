@@ -48,7 +48,7 @@ Then ask: continue / skip / quit?
 
 **Skip if:** no `Referral Status=Outreach Pending` companies with `Priority=HIGH`.
 
-**Else:** for each new HIGH company that needs a referral, read `outreach.md` and run the sweep. The sweep does both: connection requests to 2nd-degree contacts ("Send without a note", quota-capped) AND first DMs to existing 1st-degree connections. Respect the rolling 7-day 100-request cap from `outreach.md` Step 2C — if adding a company would exceed the cap, trim and tell the user.
+**Else:** for each new HIGH company that needs a referral, read `outreach.md` and run the sweep. The sweep does both: connection requests to 2nd-degree contacts ("Send without a note", per-company quota from Step 2C) AND first DMs to existing 1st-degree connections. Keep going across companies until LinkedIn pushes back (CAPTCHA / rate-limit notice) — at which point stop and tell the user.
 
 Then ask: ready to commit / skip commit / quit?
 
@@ -89,7 +89,7 @@ After commit (or after the user quits), print:
 ```
 Daily run complete (<YYYY-MM-DD>):
   ✅ <I> new jobs added
-  ✅ <K> connection requests sent (no-note) — weekly running total: <X>/100
+  ✅ <K> connection requests sent (no-note) — total in last 7 days: <X>
   ✅ <M> first DMs sent to 1st-degree connections
   ⏳ Pending: <list of items waiting on the user>
 
@@ -102,7 +102,7 @@ Tomorrow's surface:
 
 ## Hard rules (re-stated)
 
-- Connection requests always use "Send without a note". Per-company quota + 100/week rolling cap (see `outreach.md` Step 2C).
+- Connection requests always use "Send without a note". Per-company quota from `outreach.md` Step 2C; no global weekly cap (loop only stops on LinkedIn-side block per Step 4B).
 - Never sends a DM with an attachment. The first DM is text only.
 - Never click Send on a DM without explicit user confirmation per message. Connection-request batches use a single batch confirmation.
 - Never use em-dashes in any drafted message.

@@ -15,7 +15,6 @@ See `README.md` for the user-facing overview and `REQUIREMENTS.md` for setup. Th
 | `CLAUDE.md` (this file) | Project-wide hard rules, canonical values |
 | `README.md` | Human-readable workflow overview |
 | `REQUIREMENTS.md` | Setup (Chrome extension, git) |
-| `.claude/AUTOMATION_LIMITATIONS.md` | Trust map: what Claude automates vs. what the user must do |
 | `.claude/commands/jobs/_shared.md` | Shared rules loaded by every `/jobs` sub-flow |
 | `.claude/commands/jobs/{find,check,add,update,outreach,daily}.md` | Per-flow procedures |
 | `resumes/` | User's resume(s). Source of truth for name, target roles, skills, pitch |
@@ -42,7 +41,7 @@ If multiple resumes are present, read all of them and use the union of titles + 
 5. **Render tracker contents as a clean markdown table** — never raw CSV.
 6. **NEVER use em-dashes (—) in any user-facing message the user sends** — emails, LinkedIn DMs, follow-ups, subject lines, anything outgoing. Use commas, periods, parentheses, or split sentences instead. Em-dashes are a tell of AI-written text. Scan every draft for `—` before showing it; rewrite if found. Internal notes, tracker, contacts files are fine.
 7. **For outreach DMs: you draft the message, the user sends it.** Browser MCP can navigate to the thread and type the message body, but you do NOT click Send without explicit confirmation. Standing flow: (a) navigate to the thread, (b) type the message body, (c) STOP and ask: "Ready to send?", (d) wait for the user to confirm before clicking Send.
-8. **Connection requests: always "Send without a note", never personalized.** LinkedIn rate-limits personalized invites; bulk connection requests must always go through the "Send without a note" button. **One confirmation per company batch** — show the user the full list of names + the running weekly total, get a single "y" to send the whole batch. Per-company quota = `max(0, (10 − count_1st_degree) × 5)`; rolling 7-day cap = 100 across all companies. See `.claude/commands/jobs/outreach.md` Step 2C.
+8. **Connection requests: always "Send without a note", never personalized.** LinkedIn rate-limits personalized invites; bulk connection requests must always go through the "Send without a note" button. **One confirmation per company batch** — show the user the full list of names, get a single "y" to send the whole batch. Per-company quota = `max(0, (10 − count_1st_degree) × 5)`. **No global weekly cap** — keep going until LinkedIn pushes back (CAPTCHA, rate-limit notice). See `.claude/commands/jobs/outreach.md` Step 2C and Step 4B.
 9. **Never attempt file uploads.** LinkedIn / Gmail / ATS file inputs are blocked from automation. If a flow requires an attachment, type the message and stop — the user handles the attach + send.
 
 ## Canonical values

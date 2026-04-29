@@ -97,7 +97,7 @@ When drafting any user-facing text, scan for `—` before showing it to the user
 - Date format always YYYY-MM-DD. If creating folders: spaces → underscores, strip commas/special chars.
 - **Any send / submit / click-Send in Chrome: show the user what will happen, get explicit "yes" before executing.**
 - Never click the Send button on a LinkedIn DM, application form, or email without explicit user confirmation for that specific message.
-- Connection requests: always use the "Send without a note" path — never personalized. Per-company quota and weekly cap defined in `outreach.md` Step 2C. One confirmation covers the whole batch at a company; the user can edit names out of the batch first.
+- Connection requests: always use the "Send without a note" path — never personalized. Per-company quota in `outreach.md` Step 2C. No global weekly cap; the loop only stops on a LinkedIn-side block (CAPTCHA, rate-limit notice). One confirmation covers the whole batch at a company; the user can edit names out of the batch first.
 - Use `WebSearch` any time Chrome is slow, blocked, or returns incomplete info.
 
 ---

@@ -71,9 +71,9 @@ Show two ranked tables, one per network tier:
 
 ---
 
-## Step 2C — Connection-request quota
+## Step 2C — Connection-request quota (per company)
 
-LinkedIn rate-limits connection requests aggressively. Use a per-company quota based on how many 1st-degree connections the user already has:
+Use a per-company quota based on how many 1st-degree connections the user already has there:
 
 ```
 quota = max(0, (10 − count_1st_degree) × 5)
@@ -81,7 +81,7 @@ quota = max(0, (10 − count_1st_degree) × 5)
 
 | 1st-degree available | Connection requests to send |
 |---|---|
-| 10+ | 0 (you already have plenty of internal contacts) |
+| 10+ | 0 (already have plenty of internal contacts) |
 | 9 | 5 |
 | 8 | 10 |
 | 7 | 15 |
@@ -90,9 +90,7 @@ quota = max(0, (10 − count_1st_degree) × 5)
 | 1 | 45 |
 | 0 | 50 |
 
-**Weekly cap: ≤100 connection requests across ALL companies in any rolling 7-day window.** If sending the calculated quota would push the weekly total over 100, reduce proportionally and tell the user which companies were trimmed.
-
-To check the rolling 7-day total, count entries in all `outreach/<Company>_contacts.md` files where `Stage = 1. Connection Pending` and `Last Action Date ≥ today - 7`.
+**No global weekly cap is enforced.** Send the per-company quota in full. The only stop signal is LinkedIn itself — see Step 4B for the CAPTCHA / rate-limit handling.
 
 ---
 
@@ -191,7 +189,7 @@ About to send <N> connection requests at <Company>:
   ...
 
 All sent without a note ("Send without a note" path).
-Weekly running total after this batch: <X>/100.
+Will stop early if LinkedIn shows a CAPTCHA or rate-limit notice.
 
 Confirm? [y / n / edit]
 ```
@@ -210,7 +208,14 @@ For each confirmed contact:
    - If only a note-required path is shown (rare), skip and log "Note required, skipped".
 5. Wait for confirmation that the request was sent.
 
-**Pace the loop:** insert a small delay between requests (~2-3s) to avoid LinkedIn flagging it as bot activity.
+**Pace the loop:** insert a small delay between requests (~2-3s).
+
+**Stop conditions (mandatory):** if at any point during the batch you see a CAPTCHA, a "Verify it's you" challenge, a "you've reached the weekly limit" notice, or any unusual interstitial — STOP the loop immediately. Do not attempt to click through. Tell the user:
+- What was hit (CAPTCHA / rate-limit / other)
+- How many requests went through before the block
+- Which contacts are still pending
+
+Do not retry until the user explicitly resumes the run (typically next day or later). Clicking through a CAPTCHA via automation makes the bot signal worse; let the user handle it manually if they want to.
 
 ### C. Log each request
 
@@ -257,7 +262,7 @@ git commit -am "outreach: <Company> → <N> conn reqs, <M> DMs"
 ## Hard rules (re-stated)
 
 - **Always "Send without a note"** for connection requests. Never click "Add a note".
-- **Per-company quota** from the formula in Step 2C. **Weekly cap ≤100.**
+- **Per-company quota** from the formula in Step 2C. No global weekly cap — only LinkedIn-side blocks (CAPTCHA, rate-limit notice) stop the loop.
 - **Pre-batch confirmation** before sending connection requests. Single "y" confirms the whole batch; the user can edit out names first.
 - **Per-message confirmation** before sending DMs. Each first DM gets its own "Ready to send?" check.
 - **No em-dashes** in any drafted message. Scan for `—` and rewrite.

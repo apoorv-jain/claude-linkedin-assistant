@@ -93,7 +93,6 @@ claude-linkedin-assistant/
 │   └── <Company>_contacts.md     ← per-company contact log (gitignored by default)
 │
 └── .claude/
-    ├── AUTOMATION_LIMITATIONS.md ← honest map of what's automated vs. manual
     └── commands/
         ├── jobs.md               ← top-level /jobs command
         └── jobs/
@@ -126,13 +125,6 @@ Open in any spreadsheet app or use the `/jobs check` dashboard.
 - `outreach/*.md` is `.gitignore`d. Your contact log stays local.
 
 If you fork to a private repo and want to commit your resume too, edit `.gitignore`.
-
-## Trust map
-
-Read [.claude/AUTOMATION_LIMITATIONS.md](.claude/AUTOMATION_LIMITATIONS.md) before running anything end to end. Short version:
-
-- **Safe to automate:** tracker reads/writes, job discovery, "Send without a note" connection requests at quota, first DMs to existing 1st-degree connections.
-- **You must do manually:** replies, follow-ups, applications, file uploads, anything with judgment.
 
 ## License
 

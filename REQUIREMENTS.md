@@ -53,11 +53,7 @@ In the app, run `/jobs` to start.
 
 ## First-run setup
 
-1. Drop your resume into `resumes/`:
-   ```bash
-   cp ~/Documents/your_resume.pdf resumes/
-   ```
-   Any format works: `.pdf`, `.tex`, `.md`, `.docx`. Multiple files are fine if you have role-specific versions.
+1. Put your resume into the `resumes/` folder. Drag it in from Finder, copy it from wherever you keep your latest version, whatever's easiest. Any format works: `.pdf`, `.tex`, `.md`, or `.docx`. Multiple files are fine if you have role-specific versions.
 
 2. Make sure your LinkedIn account is signed in inside the Chrome extension's browser. The name on LinkedIn must match the name at the top of your resume — Step 0 of `/jobs` verifies this before anything else runs.
 

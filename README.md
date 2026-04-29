@@ -44,15 +44,11 @@ cd claude-linkedin-assistant
 
 That's it for the terminal. Everything else happens inside the Claude Code app.
 
-### 2. Drop your resume into `resumes/`
+### 2. Put your resume into `resumes/`
 
-There's no profile file or settings form to fill out. Claude reads your resume directly to figure out your name (so it can verify the right LinkedIn account is signed in), your target roles + top skills (for `/jobs find` searches), and a short pitch (for the outreach DM template). Just drop your resume into the `resumes/` folder:
+There's no profile file or settings form to fill out. Claude reads your resume directly to figure out your name (so it can verify the right LinkedIn account is signed in), your target roles + top skills (for `/jobs find` searches), and a short pitch (for the outreach DM template).
 
-```bash
-cp ~/Documents/your_resume.pdf resumes/
-```
-
-`.pdf`, `.tex`, `.md`, or `.docx` all work. If you have role-specific versions, drop them all in — the flows read everything and use the union of titles + skills.
+Just put your resume into the `resumes/` folder however you normally move a file — drag it in from Finder, copy it from wherever you keep your latest version, whatever's easiest. `.pdf`, `.tex`, `.md`, and `.docx` all work. If you have role-specific versions of your resume, drop them all in — the flows read everything in there and use the union of titles + skills.
 
 ### 3. Open the folder in Claude Code
 

@@ -35,14 +35,11 @@ cd claude-linkedin-assistant
 
 # 3. Drop your resume into the resumes/ folder. Any format works (.pdf, .tex, .md, .docx).
 cp ~/Documents/your_resume.pdf resumes/
-
-# 4. Open the repo in Claude Code (pick one):
-#    - CLI: run `claude` in this folder
-#    - Desktop app: File → Open Folder → pick claude-linkedin-assistant
-claude
 ```
 
-Then in Claude Code:
+4. **Open the [Claude Code desktop app](https://docs.claude.com/en/docs/claude-code).** File → Open Folder → pick the `claude-linkedin-assistant` folder you just cloned.
+
+Then in the app:
 
 ```
 /jobs                       # show the menu
@@ -75,7 +72,7 @@ If you want a more full-featured workflow (resume tailoring, reply handling, app
 
 ## Requirements
 
-1. **[Claude Code, installed locally](https://docs.claude.com/en/docs/claude-code)** — either the CLI or the desktop app. Both can read your local `resumes/` folder and drive the Chrome extension. The web version at claude.ai/code will NOT work for either reason.
+1. **[Claude Code desktop app](https://docs.claude.com/en/docs/claude-code)** — the local desktop install is what runs this workspace. The web version at claude.ai/code will NOT work because it can't read your local `resumes/` folder or drive the Chrome extension.
 2. **[Claude in Chrome extension](https://claude.com/claude-in-chrome)** — Claude needs this to navigate LinkedIn. Install it, then sign into your LinkedIn account in that browser.
 3. **Git** (pre-installed on macOS / most Linux distros).
 4. **GitHub CLI** (optional) — only if you want to push your fork.

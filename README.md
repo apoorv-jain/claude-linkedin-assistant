@@ -14,6 +14,7 @@
 
 <p align="center">
   <a href="#quick-start"><strong>Quick Start</strong></a> ·
+  <a href="#how-it-works"><strong>How it works</strong></a> ·
   <a href="#what-it-does"><strong>What it does</strong></a> ·
   <a href="#daily-flow"><strong>Daily flow</strong></a> ·
   <a href="#privacy"><strong>Privacy</strong></a>
@@ -73,6 +74,20 @@ After that, you've got the menu:
 If you just want to see it run, do `/jobs daily` — it walks you through one full day end to end.
 
 For more detail on any of these, see [What it does](#what-it-does), [Daily flow](#daily-flow), or [REQUIREMENTS.md](REQUIREMENTS.md).
+
+## How it works
+
+The whole thing is built around two files that hold all the state. Your resume in `resumes/` is the source of truth about *you* — name, target roles, skills, pitch. `job_tracker.csv` is the source of truth about the *jobs* — every job you've ever looked at is a row there, with status, priority, dates, deadlines. Claude reads from these and writes back to them. There's no database, no hidden state, no settings panel. Want to see what's going on at any moment? Open the CSV.
+
+When you run any `/jobs` command, the very first thing it does is open Chrome via the extension and check that LinkedIn is signed in to the right account (matching the name it just read from your resume). If something's off — extension not connected, wrong account active, redirected to the login page — it stops and tells you exactly what to fix. This happens every time, on every command, so you never run a flow against the wrong account by accident.
+
+After that, the actual work happens through the Chrome extension. Claude doesn't have a private LinkedIn API; it drives your browser like a person would. Searches use real LinkedIn URLs, profile clicks happen in actual tabs, DMs get typed into the real chat overlay. The upside is LinkedIn sees this as normal browser activity. The tradeoff is you need to keep your signed-in Chrome window open while a flow is running.
+
+The flow that does the most work is `/jobs outreach`. For each company you target, Claude counts how many 1st-degree connections you already have there and computes a per-company quota — more requests if you're sparse, zero if you already have plenty of internal contacts. It then batches the connection requests (always "Send without a note", because LinkedIn rate-limits personalized invites hard) and asks you to confirm the whole batch with one "y". For people you're already connected to, it drafts a short DM using the pitch it pulled from your resume and asks you to approve each one before clicking Send. The loop keeps going across companies until LinkedIn itself pushes back — if you see a CAPTCHA or a "you've reached the weekly limit" notice mid-batch, it halts and reports which contacts went through and which are still pending.
+
+Anything that requires real judgment stays on you: replies once a thread goes warm, follow-up nudges, application forms, attaching a resume to a Gmail thread, deciding what to say when a recruiter asks about your salary expectations. Claude is good at the safe, repetitive parts — sending the same templated first message to twenty new connections, paginating through LinkedIn search results, keeping the CSV in sync, drafting outreach text. It's not good at the high-judgment moments, so by design, it doesn't try to do them.
+
+When you run `/jobs daily`, it strings the four pipeline flows together — find new jobs, check the dashboard, add anything you saw elsewhere, run outreach at HIGH-priority companies that need a referral — with a checkpoint between each step where you can continue, skip, or quit. At the end it makes a single git commit summarizing what happened that day. Run it once and you've done the day's pipeline work in one pass.
 
 ## What it does
 

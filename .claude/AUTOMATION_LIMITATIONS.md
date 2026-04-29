@@ -2,23 +2,24 @@
 
 Honest map of what `/jobs` automates vs. what you have to do yourself. Read this before letting anything run end to end.
 
-**TL;DR: this repo only automates the safe, repetitive parts.** First DMs to existing connections, tracker reads/writes, job discovery. Everything else is on you.
+**TL;DR: this repo only automates the safe, repetitive parts.** Connection requests (no-note, capped), first DMs to existing connections, tracker reads/writes, job discovery. Everything else is on you.
 
 ---
 
 ## ✅ Claude IS reliable at
 
 - **Reading and querying the tracker.** `/jobs check`, filtered queries, dashboards.
-- **Sending first cold DMs to your existing 1st-degree LinkedIn connections** (short templated intros).
-- **Job discovery + scoring** via LinkedIn search and web search, when the profile is well defined.
+- **Sending LinkedIn connection requests** via the "Send without a note" path (per `outreach.md` Step 4). Per-company quota and 100-per-week cap enforced.
+- **Sending first cold DMs to existing 1st-degree LinkedIn connections** (short templated intros).
+- **Job discovery + scoring** via LinkedIn search and web search, with the search profile inferred from your resume.
 - **Adding, updating, and writing rows in `job_tracker.csv`** when explicitly told what changed.
 - **Drafting message bodies.** Composing the text itself.
 
 ## ⚠️ Out of scope by design (this repo will NOT do these)
 
-### 1. Sending connection requests
+### 1. Personalized connection-request notes
 
-This repo deliberately does not send `Connect` requests. If outreach surfaces only 2nd-degree candidates, they're logged as `Connection Pending` and you send the requests manually. Connection requests have a personal quality control layer LinkedIn rate-limits aggressively, and bulk-sending can damage your reputation.
+This repo always uses "Send without a note." LinkedIn caps personalized invites tightly (a few per month on free accounts) and burning that quota on bulk outreach is wasteful. If you want to send a personalized invite to one specific person, do it yourself.
 
 ### 2. Replying to DMs
 
@@ -54,7 +55,11 @@ If you run a lot of searches or send many DMs in a short window, LinkedIn may th
 
 ### 4. Outreach message content
 
-The DM templates use the third-person pitch you wrote in `profile/profile.md`. If your pitch is sloppy, the DM is sloppy. Read every drafted DM before approving Send. Watch for em-dashes (a tell of AI-written text) — the flows scan for them but read anyway.
+The DM templates use a third-person pitch built from your resume in `resumes/`. If your resume's headline/summary is vague, the DM will be vague — make sure the resume's first paragraph is tight. Read every drafted DM before approving Send. Watch for em-dashes (a tell of AI-written text); the flows scan for them but read anyway.
+
+### 5. Connection-request quotas and CAPTCHAs
+
+The 100-per-week cap is conservative; LinkedIn's actual limit varies by account age, premium tier, and recent activity. If you see a CAPTCHA mid-batch or a "you've reached the weekly limit" notice, **stop the batch immediately** and tell the user. Do not click through CAPTCHAs in automation — they exist precisely to detect bot activity, and clicking through with the browser MCP makes the signal worse.
 
 ---
 
@@ -66,8 +71,9 @@ The DM templates use the third-person pitch you wrote in `profile/profile.md`. I
 | `/jobs find` (discover new jobs) | Low |
 | `/jobs add` (add a job) | Low |
 | `/jobs update` (status change) | Low |
-| First cold DM to a 1st-degree connection | **Medium** — read the draft, confirm Send |
-| Anything beyond first DM | **Out of scope** — do it yourself |
+| Connection-request batch ("Send without a note") | **Low–Medium** — review the batch list once, single confirm sends all |
+| First cold DM to a 1st-degree connection | **Medium** — read the draft, confirm Send per message |
+| Anything beyond first DM (replies, follow-ups, applications) | **Out of scope** — do it yourself |
 
 ---
 

@@ -48,7 +48,7 @@ Then ask: continue / skip / quit?
 
 **Skip if:** no `Referral Status=Outreach Pending` companies with `Priority=HIGH`.
 
-**Else:** for each new HIGH company that needs a referral, read `outreach.md` and run the sweep. **Only sends first DMs to existing 1st-degree connections.** If only 2nd-degree candidates exist, surfaces them for the user to send connection requests manually.
+**Else:** for each new HIGH company that needs a referral, read `outreach.md` and run the sweep. The sweep does both: connection requests to 2nd-degree contacts ("Send without a note", quota-capped) AND first DMs to existing 1st-degree connections. Respect the rolling 7-day 100-request cap from `outreach.md` Step 2C — if adding a company would exceed the cap, trim and tell the user.
 
 Then ask: ready to commit / skip commit / quit?
 
@@ -65,11 +65,11 @@ daily <YYYY-MM-DD>: <short summary>
 New jobs added:
 - <Company>: <Role> [<Priority>]
 
-Outreach sent:
-- <Company>: <Name>
+Connection requests sent:
+- <Company>: <N> contacts (no-note)
 
-Connection candidates logged (user to send):
-- <Company>: <N> contacts
+Outreach DMs sent:
+- <Company>: <Name>
 
 Status updates:
 - <Company>: <old> → <new>
@@ -89,8 +89,8 @@ After commit (or after the user quits), print:
 ```
 Daily run complete (<YYYY-MM-DD>):
   ✅ <I> new jobs added
-  ✅ <M> outreach DMs sent (1st-degree only)
-  📌 <K> 2nd-degree candidates logged for manual connect
+  ✅ <K> connection requests sent (no-note) — weekly running total: <X>/100
+  ✅ <M> first DMs sent to 1st-degree connections
   ⏳ Pending: <list of items waiting on the user>
 
 Tomorrow's surface:
@@ -102,8 +102,8 @@ Tomorrow's surface:
 
 ## Hard rules (re-stated)
 
-- This repo never sends connection requests. Step 4 logs 2nd-degree candidates only.
-- This repo never sends a DM with an attachment. The first DM is text only.
-- Never click Send without explicit user confirmation.
+- Connection requests always use "Send without a note". Per-company quota + 100/week rolling cap (see `outreach.md` Step 2C).
+- Never sends a DM with an attachment. The first DM is text only.
+- Never click Send on a DM without explicit user confirmation per message. Connection-request batches use a single batch confirmation.
 - Never use em-dashes in any drafted message.
 - One commit at the end of the daily run, not per-step.

@@ -55,11 +55,12 @@ In Claude Code, run `/jobs` to start.
 
 ## First-run setup
 
-1. Copy the profile templates:
+1. Drop your resume into `resumes/`:
    ```bash
-   cp profile/profile.template.md profile/profile.md
-   cp profile/personal_info.template.json profile/personal_info.json   # optional
+   cp ~/Documents/your_resume.pdf resumes/
    ```
-2. Fill in `profile/profile.md` with your name, target roles, top skills, and a short pitch.
-3. Make sure your LinkedIn account is signed in inside the Chrome extension's browser.
-4. Run `/jobs` in Claude Code. Step 0 verifies Chrome + LinkedIn before anything else.
+   Any format works: `.pdf`, `.tex`, `.md`, `.docx`. Multiple files are fine if you have role-specific versions.
+
+2. Make sure your LinkedIn account is signed in inside the Chrome extension's browser. The name on LinkedIn must match the name at the top of your resume — Step 0 of `/jobs` verifies this before anything else runs.
+
+3. Run `/jobs` in Claude Code.

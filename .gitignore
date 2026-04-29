@@ -2,8 +2,8 @@
 .DS_Store
 
 # Personal data — never commit, even on a private fork unless you edit this file
-profile/profile.md
-profile/personal_info.json
+resumes/*
+!resumes/README.md
 
 # Outreach contact logs — local only, contains names + LinkedIn URLs
 outreach/*.md

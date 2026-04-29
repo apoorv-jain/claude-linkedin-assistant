@@ -14,9 +14,8 @@ cd claude-linkedin-assistant
 # 2. Install the Claude in Chrome extension and sign into LinkedIn:
 #    https://claude.com/claude-in-chrome
 
-# 3. Copy the profile template and fill it in (your name, target roles, pitch)
-cp profile/profile.template.md profile/profile.md
-$EDITOR profile/profile.md
+# 3. Drop your resume into the resumes/ folder. Any format works (.pdf, .tex, .md, .docx).
+cp ~/Documents/your_resume.pdf resumes/
 
 # 4. Open the repo in Claude Code
 claude
@@ -38,18 +37,18 @@ That's the whole loop. See [Requirements](#requirements) if any prereqs are miss
 
 | Feature | Command | Who does what |
 |---|---|---|
-| Verify Chrome + LinkedIn login | (auto on every `/jobs` run) | Claude checks your active LinkedIn profile matches the one configured |
-| Find new jobs | `/jobs find` | Claude searches LinkedIn + the web, scores results, adds them to the tracker |
+| Verify Chrome + LinkedIn login | (auto on every `/jobs` run) | Claude reads your name from your resume in `resumes/` and verifies the active LinkedIn profile matches |
+| Find new jobs | `/jobs find` | Claude reads your resume(s), searches LinkedIn + the web, scores and adds results to the tracker |
 | Track jobs | `/jobs check` · `/jobs add` · `/jobs update` | Claude reads/writes `job_tracker.csv` |
-| Outreach (first message) | `/jobs outreach <Company>` | Claude drafts and sends a short DM to your **existing 1st-degree connections** at that company |
+| Outreach (cold sweep) | `/jobs outreach <Company>` | Claude sends connection requests to 2nd-degree contacts ("Send without a note") and a first DM to existing 1st-degree connections at that company |
 | Daily run | `/jobs daily` | Walks through find → check → outreach in one pass |
 
 ## What it does NOT do (by design)
 
-- ❌ **No connection-request sending.** Outreach only DMs people you're already connected to.
-- ❌ **No reply handling, no follow-ups.** When someone replies, you handle it.
+- ❌ **No reply handling, no follow-ups.** When someone replies to a DM, you handle the conversation.
 - ❌ **No application submission, no resume tailoring, no cover letter generation.** Apply yourself.
 - ❌ **No file uploads.** LinkedIn / Gmail / ATS forms block automated upload anyway.
+- ❌ **No personalized connection-request notes.** All connection requests go through "Send without a note" to conserve LinkedIn's monthly personalized-invite quota.
 
 If you want a more full-featured workflow (resume tailoring, reply handling, application form auto-fill), fork this repo and extend it. This version is intentionally minimal so it's safe to share.
 
@@ -87,9 +86,8 @@ claude-linkedin-assistant/
 ├── .gitignore
 ├── job_tracker.csv               ← MAIN DASHBOARD. Open in Numbers/Excel/VS Code.
 │
-├── profile/
-│   ├── profile.template.md       ← copy to profile.md, fill in
-│   └── personal_info.template.json
+├── resumes/                      ← drop your resume(s) here (gitignored by default)
+│   └── README.md                 ← committed instructions
 │
 ├── outreach/                     ← created on first /jobs outreach run
 │   └── <Company>_contacts.md     ← per-company contact log (gitignored by default)
@@ -124,17 +122,16 @@ Open in any spreadsheet app or use the `/jobs check` dashboard.
 
 ## Privacy
 
-- `profile/personal_info.json` and `profile/profile.md` are `.gitignore`d by default.
+- `resumes/*` (everything except `resumes/README.md`) is `.gitignore`d by default. Your resume stays local.
 - `outreach/*.md` is `.gitignore`d. Your contact log stays local.
-- Only the templates ship in this repo.
 
-If you fork to a private repo and want to commit your filled-in profile, edit `.gitignore`.
+If you fork to a private repo and want to commit your resume too, edit `.gitignore`.
 
 ## Trust map
 
 Read [.claude/AUTOMATION_LIMITATIONS.md](.claude/AUTOMATION_LIMITATIONS.md) before running anything end to end. Short version:
 
-- **Safe to automate:** tracker reads/writes, job discovery, first DMs to existing connections.
+- **Safe to automate:** tracker reads/writes, job discovery, "Send without a note" connection requests at quota, first DMs to existing 1st-degree connections.
 - **You must do manually:** replies, follow-ups, applications, file uploads, anything with judgment.
 
 ## License

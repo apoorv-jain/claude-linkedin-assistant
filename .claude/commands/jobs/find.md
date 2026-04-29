@@ -1,14 +1,22 @@
 # FIND (live job search)
 
-## Step 1 — Read the user's profile
+## Step 1 — Read the user's resume(s) and infer search profile
 
-Read `profile/profile.md` and extract:
-- Target roles (job titles to search for)
-- Top keywords / skills
-- Locations
-- Salary range
+Read every resume file in `resumes/` (skip the README). Extract:
 
-If the profile is missing or sparse, stop and ask the user to fill it in first.
+- **Target roles** — the user's most recent role title + adjacent titles (e.g. if they're a "Senior Data Scientist", also search "Staff Data Scientist", "Senior Product Data Scientist", "Lead Data Scientist"). Pull 3-6 titles total.
+- **Top keywords / skills** — 10-15 from the skills section + repeated terms across bullets (technologies, methodologies, domain terms).
+- **Default location** — the city/state from the resume's contact line.
+
+If `resumes/` has nothing useful (only the README), stop and tell the user to drop their resume in.
+
+Ask the user once at the start of the run (single line):
+
+> "Search profile inferred from resume: titles=<list>, keywords=<list>, location=<city/state>+Remote. Override anything? [Enter to accept]"
+
+Common overrides: switch the city, restrict to Remote only, narrow titles. Accept whatever they say verbatim, then proceed.
+
+**No salary filter by default** — salary expectations aren't on most resumes. If the user wants a salary floor in scoring, they'll mention it at the override prompt.
 
 ---
 
@@ -26,7 +34,7 @@ Read results. Extract per job: Company, Role, Location, Type (Remote/Hybrid/On-s
 
 **WebSearch sweep (run in parallel with the Chrome searches):**
 
-Build 3-5 queries combining target titles, top keywords, and locations from the profile. Examples:
+Build 3-5 queries combining target titles, top keywords, and locations inferred from the resume. Examples:
 - `"<target title>" jobs "<location>" site:linkedin.com OR site:indeed.com 2026`
 - `"<target title>" "<keyword>" "<keyword>" Remote jobs 2026`
 - `"<adjacent title>" "<keyword>" "<location>" 2026`
@@ -41,14 +49,14 @@ Combine all results into one pool.
 
 **Dedup:** Remove any result where Company + similar Role already exists in `job_tracker.csv`. Track skipped names to report at the end.
 
-**Score each job (0-10) against the user's profile:**
+**Score each job (0-10) against the inferred search profile:**
 
 - Title matches a target role exactly: +3
 - Title is adjacent (e.g. "Staff" instead of "Senior", or "Analyst" vs "Scientist" with overlapping skills): +1.5
-- Location matches one of the user's preferred locations OR is Remote: +2
-- Each keyword overlap with profile's top keywords: +0.5 (cap at +3)
-- Salary in user's range: +1
+- Location matches the user's location OR is Remote: +2
+- Each keyword overlap with the resume's top keywords: +0.5 (cap at +3)
 - Posted ≤7 days ago: +1
+- Salary in user's stated range (only if the user provided one at the override prompt): +1
 
 Drop jobs where total score < 4. Sort descending. Take top 20.
 

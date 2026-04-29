@@ -1,14 +1,14 @@
-# OUTREACH (first DM to existing 1st-degree connections)
+# OUTREACH (cold sweep at a company)
 
-**Scope of this repo's outreach:** Send a first cold DM to people the user is **already connected to** (1st degree) at a target company. That's it.
+The outreach flow does two things at a target company:
 
-**Out of scope (the user does these manually):**
-- ❌ Sending connection requests
-- ❌ Replying to DMs
-- ❌ Sending follow-up nudges
-- ❌ Sending DMs to 2nd-degree connections (they need a connection request first, which the user sends)
+1. **Send connection requests** to 2nd-degree contacts (recruiters, peers, leads). Always "Send without a note" — LinkedIn rate-limits personalized invites.
+2. **Send a first DM** to your existing 1st-degree connections at the company.
 
-If the company is a `Connection Pending` row (no 1st-degree contact found yet), this flow logs candidates the user can connect with — but does NOT send the request.
+Out of scope (you handle these manually):
+- ❌ Replying to DMs once a thread is warm
+- ❌ Follow-up nudges on stale outreach
+- ❌ Sending a resume / file attachments
 
 ---
 
@@ -24,57 +24,85 @@ Ask: "Which company?"
 
 Direct argument shortcut: `/jobs outreach <Company>` jumps straight to that company.
 
+If the chosen company is `Connection Pending`, jump to **Step 4 — Check pending acceptances**.
+
 ---
 
-## Step 2 — Find 1st-degree contacts at the company
+## Step 2 — Find contacts (1st-degree FIRST, then 2nd)
 
-**LinkedIn via Chrome:**
+LinkedIn via Chrome:
 
 1. Navigate to `https://www.linkedin.com/company/<slug>/people/`. Extract the numeric company ID by scanning the page for `urn:li:fsd_company:<id>` and picking the most-frequent match.
 
-2. Search **1st-degree only**:
+2. **Step 2A (MANDATORY): 1st-degree only**, no keyword filter:
    ```
    https://www.linkedin.com/search/results/people/?currentCompany=["<id>"]&network=["F"]
    ```
-   No keyword filter. Read every result.
+   Read every result. These are your existing connections at the company and are always the top picks for direct DMs.
 
-3. The URL params are `network` and `currentCompany`, NOT `facetNetwork` / `facetCurrentCompany`.
+3. **Step 2B: 2nd-degree fallback**, with role-relevant keywords:
+   ```
+   https://www.linkedin.com/search/results/people/?currentCompany=["<id>"]&network=["S"]&keywords=recruiter OR <role keyword>
+   ```
+   Use role keywords inferred from the user's resume(s) in `resumes/` (e.g. "data scientist" / "engineer" / "product manager").
 
-4. Extract per contact: name, title, profile URL, mutual-connection count.
+4. **Never combine `network=["F","S"]` in one search.** LinkedIn sorts combined results by keyword relevance, which buries 1st-degree contacts below 2nd-degree ones. Always do the two searches separately.
 
-**Result A: 1st-degree contacts found.** Rank them:
-1. Recruiter / Talent Acquisition (highest priority for cold outreach)
-2. Peer in similar role to the user (data scientist, engineer, etc. — match on title overlap with the user's profile)
-3. Anyone else 1st degree at the company
+5. URL params are `network` and `currentCompany`, NOT `facetNetwork` / `facetCurrentCompany`.
 
-Show ranked table:
+Extract per contact: name, title, connection degree, mutual-connection count, profile URL.
+
+**Priority order:**
+
+1. **Any 1st-degree connection** at the company — always beats 2nd-degree, regardless of title. Goes through Step 3 (DM flow).
+2. **2nd-degree recruiter / Talent Acquisition.** Connection request via Step 4.
+3. **2nd-degree peer** (data scientist, engineer, product, etc. — match on the user's role from their resume in `resumes/`). Connection request via Step 4.
+4. **2nd-degree lead / manager** in the user's function. Connection request via Step 4.
+
+Show two ranked tables, one per network tier:
+
 ```
+1st-degree (DM directly):
+# | Name | Title | LinkedIn URL | Mutuals
+
+2nd-degree (connection request):
 # | Name | Title | LinkedIn URL | Mutuals
 ```
 
-Ask: "Who do you want to reach out to? Pick one or more."
+---
 
-**Result B: No 1st-degree contacts found.** Optionally do a 2nd-degree search:
+## Step 2C — Connection-request quota
+
+LinkedIn rate-limits connection requests aggressively. Use a per-company quota based on how many 1st-degree connections the user already has:
 
 ```
-https://www.linkedin.com/search/results/people/?currentCompany=["<id>"]&network=["S"]&keywords=recruiter OR <role keyword>
+quota = max(0, (10 − count_1st_degree) × 5)
 ```
 
-Show top results with: `# | Name | Title | LinkedIn URL`. Tell the user:
+| 1st-degree available | Connection requests to send |
+|---|---|
+| 10+ | 0 (you already have plenty of internal contacts) |
+| 9 | 5 |
+| 8 | 10 |
+| 7 | 15 |
+| 5 | 25 |
+| 2 | 40 |
+| 1 | 45 |
+| 0 | 50 |
 
-> "No 1st-degree contacts at <Company>. Top 2nd-degree candidates above. **You'll need to send connection requests to them manually** — this repo doesn't send connection requests. Once any of them accept, run `/jobs outreach <Company>` again to send the first DM."
+**Weekly cap: ≤100 connection requests across ALL companies in any rolling 7-day window.** If sending the calculated quota would push the weekly total over 100, reduce proportionally and tell the user which companies were trimmed.
 
-Log each as `1. Connection Pending` in `outreach/<Company>_contacts.md`. Update tracker `Referral Status=Connection Pending`. Stop here.
+To check the rolling 7-day total, count entries in all `outreach/<Company>_contacts.md` files where `Stage = 1. Connection Pending` and `Last Action Date ≥ today - 7`.
 
 ---
 
-## Step 3 — Per selected 1st-degree contact: prior-thread check + DM
+## Step 3 — DM existing 1st-degree connections
 
-For each contact selected in Step 2:
+For each 1st-degree contact selected:
 
 ### A. Open profile and verify connection level
 
-Navigate to the contact's profile URL. Confirm they show as a 1st connection. If they're still 2nd → skip and log "Connection level mismatch" (the URL params can occasionally misclassify).
+Navigate to the contact's profile URL. Confirm they show as 1st connection.
 
 ### B. Prior-thread check (MANDATORY before drafting)
 
@@ -83,13 +111,25 @@ Click Message to open the chat overlay. Scan the thread history:
 | Thread state | Action |
 |---|---|
 | No prior messages | Proceed to **C (draft message)** |
-| Prior message from user, contact replied | Skip — this is a warm thread, the user handles it manually |
+| Prior message from user, contact replied | Skip — warm thread, user handles manually |
 | Prior message from user, no reply, ≥7 days ago | **SKIP** — do not re-engage. Log `Skipped (prior unanswered DM <date>)` |
-| Prior message from user, no reply, <7 days ago | Skip for now (still in reply window) — log and move on |
+| Prior message from user, no reply, <7 days ago | Skip for now (still in reply window). Log and move on |
 
 Close the dialog if skipping.
 
 ### C. Draft and send the first DM
+
+**Step 1: Build the pitch from the user's resume.** Read whatever is in `resumes/`. Extract:
+- The user's **first name** (top of the resume)
+- The user's **current title** + **employer** (most recent role)
+- **Years of experience** (from the experience timeline)
+- **Top 2-3 specializations** (from the headline / summary / repeated keywords)
+
+Construct a single third-person sentence about the user. Examples of the right shape:
+> "She is a senior data scientist with 5+ years in experimentation and product analytics, currently at <Employer>."
+> "He is a staff ML engineer with 8+ years building production LLM systems, currently at <Employer>."
+
+The pronoun: infer from the name if obvious, otherwise default to omitting the pronoun and starting with the title ("A senior data scientist with..."). Don't invent details not in the resume.
 
 **Message style rules (strictly enforced):**
 - Short: 2-3 sentences max
@@ -97,20 +137,20 @@ Close the dialog if skipping.
 - No em-dashes (—) anywhere
 - No filler phrases like "I hope you're doing well"
 - No "Best, <name>" sign-off — end naturally
-- Use the user's pitch from `profile/profile.md` (third person for the background sentence)
+- Background sentence is third person; greeting and sign-off are first person
 
 **Draft template (adapt by contact's title):**
 
 *If the contact is a recruiter:*
 
-> Hi <First>, <user's third-person pitch from profile.md>. I saw the <Role> role at <Company> and it looks like a great fit. Would you be open to a referral or sharing more about the team?
+> Hi <First>, <third-person pitch built from the resume>. I saw the <Role> role at <Company> and it looks like a great fit. Would you be open to a referral or sharing more about the team?
 >
 > Thanks,
 > <user's first name>
 
 *If the contact is a peer (DS / engineer / similar):*
 
-> Hi <First>, <user's third-person pitch from profile.md>. I saw the <Role> opening at <Company> and it looks like a great fit. Would you be open to a referral if it feels right? Would really appreciate it.
+> Hi <First>, <third-person pitch built from the resume>. I saw the <Role> opening at <Company> and it looks like a great fit. Would you be open to a referral if it feels right? Would really appreciate it.
 >
 > Thanks,
 > <user's first name>
@@ -124,10 +164,9 @@ Show the draft. Ask: "Send, edit, or skip?"
 - On "edit" → take the edit and re-show.
 - On "skip" → close the dialog, log `Skipped (user choice)`, move on.
 
-### D. Log to outreach file and tracker
+### D. Log
 
-`outreach/<Company>_contacts.md` (create if missing — see `_shared.md` for format):
-
+`outreach/<Company>_contacts.md`:
 ```
 | <Name> | <Title> | <LinkedIn URL> | 3. Cold DM Sent | <today> | First DM, 1st-degree |
 ```
@@ -136,19 +175,91 @@ Update tracker: `Referral Status=Outreach Sent`. Append to Notes: `Outreach: <Na
 
 ---
 
-## Step 4 — After outreach
+## Step 4 — Send connection requests to 2nd-degree contacts
+
+Apply the per-company quota from Step 2C. Pick the top N from the 2nd-degree ranked table (recruiters first, then peers, then leads).
+
+### A. Pre-batch confirmation
+
+Show a summary to the user:
 
 ```
-git commit -am "outreach: <Company> → <Name>"
+About to send <N> connection requests at <Company>:
+
+  1. <Name> — <Title>
+  2. <Name> — <Title>
+  ...
+
+All sent without a note ("Send without a note" path).
+Weekly running total after this batch: <X>/100.
+
+Confirm? [y / n / edit]
 ```
 
-Tell the user: "Done. Deadline: <Referral Deadline>. If they reply, handle the thread manually — this repo doesn't automate replies or follow-ups."
+Wait for explicit "y". On "edit", let the user remove names from the batch.
+
+### B. Send loop
+
+For each confirmed contact:
+
+1. Navigate to the contact's profile URL.
+2. Find the **Connect** button. (If buried under "More", click More first.)
+3. Click Connect.
+4. **A dialog appears asking to add a note.** Click **"Send without a note"** (or the equivalent no-note button).
+   - **NEVER click "Add a note".** This burns a personalized-invite quota for no reason.
+   - If only a note-required path is shown (rare), skip and log "Note required, skipped".
+5. Wait for confirmation that the request was sent.
+
+**Pace the loop:** insert a small delay between requests (~2-3s) to avoid LinkedIn flagging it as bot activity.
+
+### C. Log each request
+
+For each successfully sent request, append to `outreach/<Company>_contacts.md`:
+
+```
+| <Name> | <Title> | <LinkedIn URL> | 1. Connection Pending | <today> | Sent without note |
+```
+
+### D. After the batch
+
+Update tracker:
+- If the company had no 1st-degree DMs sent (Step 3): `Referral Status=Connection Pending`
+- If 1st-degree DMs were sent: leave the Outreach Sent status from Step 3
+
+Append to Notes: `ConnReq: <N> contacts <today>`.
+
+Tell the user:
+> "Sent <N> connection requests at <Company>. They go in your `Connection Pending` queue — `/jobs check` will surface them once acceptances come in. Run `/jobs outreach <Company>` again later to send DMs to whoever accepted."
+
+---
+
+## Step 5 — Check pending acceptances (returning user, company in `Connection Pending`)
+
+When `/jobs outreach <Company>` is run for a company already in `Connection Pending`:
+
+1. Read `outreach/<Company>_contacts.md`. Find rows where Stage=`1. Connection Pending`.
+2. For each, navigate to the LinkedIn profile and check connection level.
+   - **Now 1st** → accepted. Update stage to `2. Connection Accepted`. Add to a "ready to DM" queue.
+   - **Still 2nd** → still pending. Skip.
+3. After the check, run **Step 3 (DM flow)** on the "ready to DM" queue.
+4. Anyone still pending past `Referral Deadline` → leave them; user can decide to write them off.
+
+---
+
+## Step 6 — After outreach
+
+```
+git commit -am "outreach: <Company> → <N> conn reqs, <M> DMs"
+```
 
 ---
 
 ## Hard rules (re-stated)
 
-- **Never click Connect** to send a connection request. If the only candidates are 2nd degree, log them as `Connection Pending` and tell the user to send requests manually.
-- **Never click Send** without explicit user confirmation for that specific message.
-- **Never use em-dashes** in the drafted message. Scan the draft for `—` and rewrite if present.
-- **Don't ask the contact for their email or any other workaround.** This flow is text-only LinkedIn DMs to existing connections.
+- **Always "Send without a note"** for connection requests. Never click "Add a note".
+- **Per-company quota** from the formula in Step 2C. **Weekly cap ≤100.**
+- **Pre-batch confirmation** before sending connection requests. Single "y" confirms the whole batch; the user can edit out names first.
+- **Per-message confirmation** before sending DMs. Each first DM gets its own "Ready to send?" check.
+- **No em-dashes** in any drafted message. Scan for `—` and rewrite.
+- **No file attachments.** This flow is text-only LinkedIn (DMs and connection requests). If the user wants to send a resume, they do it manually after a contact agrees to refer.
+- **Don't ask the contact for their email** as a workaround for upload failures.

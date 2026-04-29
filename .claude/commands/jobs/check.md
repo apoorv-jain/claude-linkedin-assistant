@@ -10,9 +10,9 @@ Jobs where `Referral Needed=YES`, `Referral Status=Outreach Pending`, `Referral 
 
 ---
 
-**2. Awaiting connection acceptance** (user action — outside this repo)
-Jobs where `Referral Status=Connection Pending`. These are companies where this repo identified a 2nd-degree contact but cannot send the connection request itself.
-→ "User to send connection requests manually on LinkedIn. Once accepted, run `/jobs outreach <Company>` to send the first DM."
+**2. Awaiting connection acceptance**
+Jobs where `Referral Status=Connection Pending` and the connection request was sent ≥2 days ago (check `outreach/<Company>_contacts.md` for stage `1. Connection Pending` rows).
+→ "Run `/jobs outreach <Company>` to check who's accepted. Step 5 of that flow re-checks each pending profile and sends the first DM to anyone who's now 1st-degree."
 
 ---
 
@@ -33,13 +33,15 @@ Read all `outreach/<Company>_contacts.md` files. Show counts by stage:
 
 ```
 Active conversations:
-  1. Connection Pending     <N> contacts across <K> companies (user to send request)
-  2. Connection Accepted    <N> (ready for /jobs outreach)
+  1. Connection Pending     <N> contacts across <K> companies (sent, awaiting accept)
+  2. Connection Accepted    <N> (ready for /jobs outreach DM step)
   3. Cold DM Sent           <N> (awaiting reply)
-  4. Reply Received         <N> (user to handle)
+  4. Reply Received         <N> (user to handle manually)
 
 Terminal:
   5. <N> closed contacts (declined / no response / skipped)
 ```
 
 For Stages 2 (ready for outreach) and 4 (replies waiting), list each contact with company + last action date so the user knows exactly which threads to act on.
+
+**Weekly connection-request total:** count entries across all `outreach/<Company>_contacts.md` files where `Stage = 1. Connection Pending` AND `Last Action Date ≥ today − 7`. Show the count + remaining headroom, e.g. `Connection requests sent in last 7 days: 47/100 (53 remaining this week)`. Surface a warning at ≥80.

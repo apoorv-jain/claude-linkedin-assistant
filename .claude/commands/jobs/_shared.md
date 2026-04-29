@@ -5,17 +5,18 @@ Today's date: read from system (YYYY-MM-DD).
 
 ---
 
-## Profile
+## User resume — the source of truth
 
-Always have `profile/profile.md` available. It contains:
-- LinkedIn name (used by Step 0 verification)
-- Background pitch (used by outreach DMs)
-- Target roles (used by find)
-- Top keywords (used by find scoring)
-- Locations (used by find)
-- Salary range
+Read whatever resume(s) the user has dropped into `resumes/`. Supported formats: `.pdf`, `.tex`, `.md`, `.docx`. Extract on demand:
 
-If `profile/profile.md` doesn't exist, stop the flow and tell the user to copy the template.
+- **Name** (top of resume) — used by Step 0 LinkedIn verification.
+- **Current title + employer + years experience + 2-3 specializations** — used by `/jobs outreach` to build a third-person pitch sentence for the DM template.
+- **Target job titles** (resume headline + most recent role titles + role-aligned alternatives) — used by `/jobs find` searches.
+- **Top skills / keywords** (skills section + repeated terms across bullets) — used by `/jobs find` scoring.
+
+If multiple resumes are present, read all of them and use the union. Never invent details that aren't on the resume.
+
+If `resumes/` is empty (only the README), stop the flow and tell the user to drop their resume in.
 
 ---
 
@@ -40,8 +41,8 @@ Use `WebSearch` proactively whenever Chrome returns incomplete info or you need 
 **Referral Status values:**
 `Not Needed` / `Outreach Pending` / `Connection Pending` / `Outreach Sent` / `Got Referral` / `Declined` / `No Referral`
 
-- `Connection Pending`: a 2nd-degree contact was identified, but the user must send the connection request manually (this repo does NOT send connection requests).
-- `Outreach Sent`: a first DM was sent to a 1st-degree connection.
+- `Connection Pending`: connection request sent ("Send without a note"), waiting for acceptance.
+- `Outreach Sent`: a first DM was sent to a 1st-degree connection (either an existing one, or one who recently accepted a connection request).
 - `Declined`: contact replied but said they can't refer.
 - `Referral Deadline`: Discovered Date + 5 days (only when Referral Needed=YES).
 - `Apply Via`: `LinkedIn Easy Apply` / `Company Website` / `Blocked`.
@@ -65,7 +66,7 @@ Create this file when first reaching out to anyone at a company. One file per co
 
 | Stage | When |
 |---|---|
-| **1. Connection Pending** | 2nd-degree contact identified; **user must send the connection request** (this repo does not send them) |
+| **1. Connection Pending** | Connection request sent ("Send without a note"), waiting for the contact to accept |
 | **2. Connection Accepted** | They accepted, ready for first DM |
 | **3. Cold DM Sent** | First outreach message sent (only via this repo's outreach flow), awaiting reply |
 | **4. Reply Received** | They replied — handled by the user, not by Claude |
@@ -79,7 +80,7 @@ Stages 4 and 5 are handled by the user manually (this repo doesn't automate repl
 
 **NEVER use em-dashes (—) in any user-facing message: LinkedIn DMs, anything sent to a contact.** Use a comma, period, parentheses, semicolon, or split into two sentences instead. This is a hard rule. Em-dashes are a tell of AI-written text.
 
-**Fit summaries / background paragraphs are written in THIRD PERSON** as defined in `profile/profile.md`. The greeting stays first-person ("Hi <name>,"), but the background paragraph shifts to third person ("She is a senior data scientist..."). The signature is the user's first name. This applies to outreach DMs only.
+**Fit summaries / background paragraphs are written in THIRD PERSON.** The greeting stays first-person ("Hi <name>,"), but the background paragraph shifts to third person ("She is a senior data scientist..."). The signature is the user's first name. This applies to outreach DMs only. The third-person sentence is built from the user's resume in `resumes/` — see `outreach.md` for the construction recipe.
 
 This rule does NOT apply to:
 - Internal documentation, tracker notes, contacts.md
@@ -96,7 +97,7 @@ When drafting any user-facing text, scan for `—` before showing it to the user
 - Date format always YYYY-MM-DD. If creating folders: spaces → underscores, strip commas/special chars.
 - **Any send / submit / click-Send in Chrome: show the user what will happen, get explicit "yes" before executing.**
 - Never click the Send button on a LinkedIn DM, application form, or email without explicit user confirmation for that specific message.
-- Never click the "Connect" button to send a LinkedIn connection request — this repo's outreach is first-message-only to existing 1st-degree connections.
+- Connection requests: always use the "Send without a note" path — never personalized. Per-company quota and weekly cap defined in `outreach.md` Step 2C. One confirmation covers the whole batch at a company; the user can edit names out of the batch first.
 - Use `WebSearch` any time Chrome is slow, blocked, or returns incomplete info.
 
 ---

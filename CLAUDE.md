@@ -18,17 +18,20 @@ See `README.md` for the user-facing overview and `REQUIREMENTS.md` for setup. Th
 | `.claude/AUTOMATION_LIMITATIONS.md` | Trust map: what Claude automates vs. what the user must do |
 | `.claude/commands/jobs/_shared.md` | Shared rules loaded by every `/jobs` sub-flow |
 | `.claude/commands/jobs/{find,check,add,update,outreach,daily}.md` | Per-flow procedures |
-| `profile/profile.md` | User-provided profile: name, target roles, pitch (loaded by find + outreach) |
-| `profile/personal_info.json` | (Optional) structured personal info; not used by any default flow |
+| `resumes/` | User's resume(s). Source of truth for name, target roles, skills, pitch |
 
-## User profile
+## User resume — the source of truth
 
-The user's profile lives in `profile/profile.md` (created by them from `profile.template.md`). Read it whenever you need:
-- The user's LinkedIn name (to verify the right account is active in Chrome)
-- Target roles + skills (for `/jobs find`)
-- Short pitch (for `/jobs outreach` message drafting)
+This repo has **no separate profile file**. Everything Claude needs about the user comes from their resume in `resumes/`. Read whatever's there (PDF / .tex / .md / .docx) whenever a flow needs:
 
-If `profile/profile.md` doesn't exist, tell the user to copy the template and fill it in before running any flow.
+- The user's **name** (top of resume) → used by `/jobs` Step 0 to verify the right LinkedIn account is active in Chrome.
+- **Target job titles** (resume headline + experience entries) → used by `/jobs find` for searches.
+- **Top skills / keywords** (skills section + repeated terms across bullets) → used by `/jobs find` for scoring.
+- A short **third-person pitch** (current title + employer + years experience + 2-3 specializations) → used by `/jobs outreach` when drafting the first DM.
+
+If `resumes/` is empty (only the README), stop the flow and tell the user to drop their resume in there before running anything.
+
+If multiple resumes are present, read all of them and use the union of titles + skills.
 
 ## Hard rules
 
@@ -39,7 +42,7 @@ If `profile/profile.md` doesn't exist, tell the user to copy the template and fi
 5. **Render tracker contents as a clean markdown table** — never raw CSV.
 6. **NEVER use em-dashes (—) in any user-facing message the user sends** — emails, LinkedIn DMs, follow-ups, subject lines, anything outgoing. Use commas, periods, parentheses, or split sentences instead. Em-dashes are a tell of AI-written text. Scan every draft for `—` before showing it; rewrite if found. Internal notes, tracker, contacts files are fine.
 7. **For outreach DMs: you draft the message, the user sends it.** Browser MCP can navigate to the thread and type the message body, but you do NOT click Send without explicit confirmation. Standing flow: (a) navigate to the thread, (b) type the message body, (c) STOP and ask: "Ready to send?", (d) wait for the user to confirm before clicking Send.
-8. **Never send connection requests.** This repo's outreach flow is **first message only, to existing 1st-degree connections**. If the target is a 2nd-degree connection, log them as "Connection Pending" so the user can send the request manually, but do NOT click Connect.
+8. **Connection requests: always "Send without a note", never personalized.** LinkedIn rate-limits personalized invites; bulk connection requests must always go through the "Send without a note" button. **One confirmation per company batch** — show the user the full list of names + the running weekly total, get a single "y" to send the whole batch. Per-company quota = `max(0, (10 − count_1st_degree) × 5)`; rolling 7-day cap = 100 across all companies. See `.claude/commands/jobs/outreach.md` Step 2C.
 9. **Never attempt file uploads.** LinkedIn / Gmail / ATS file inputs are blocked from automation. If a flow requires an attachment, type the message and stop — the user handles the attach + send.
 
 ## Canonical values
@@ -63,4 +66,4 @@ Use `/jobs` for all tracker operations. Sub-flows: `daily` · `check` · `find` 
 
 ## Tone
 
-Match the user's voice. Skip over-explanation. Default to terse, technical responses. When drafting outreach DMs, follow the templates in `outreach.md` and the user's pitch in `profile/profile.md` — do not invent claims about their experience.
+Match the user's voice. Skip over-explanation. Default to terse, technical responses. When drafting outreach DMs, follow the templates in `outreach.md` and build the pitch from the user's resume in `resumes/` — do not invent claims about their experience.

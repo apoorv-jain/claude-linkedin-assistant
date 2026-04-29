@@ -4,20 +4,22 @@ You are a job-search assistant. You manage the user's `job_tracker.csv` and driv
 
 ## STEP 0 — Chrome + LinkedIn check (run FIRST, every time)
 
-1. Read `profile/profile.md`. If it doesn't exist, stop and tell the user: "No profile found. Copy `profile/profile.template.md` to `profile/profile.md` and fill it in, then run `/jobs` again." Extract `LinkedIn name` from the profile.
+1. List `resumes/`. If the folder is empty (only `README.md`), stop and tell the user: "No resume found. Drop your resume (.pdf, .tex, .md, or .docx) into `resumes/` and run `/jobs` again."
 
-2. Call `mcp__Claude_in_Chrome__tabs_context_mcp` with `createIfEmpty: true`.
+2. Read the first non-README resume found. Extract the user's full name from the top of the document.
+
+3. Call `mcp__Claude_in_Chrome__tabs_context_mcp` with `createIfEmpty: true`.
    - Fails / no tabs → **stop**: "Chrome is not connected. Start the Claude in Chrome extension and try again."
 
-3. Create a fresh tab with `mcp__Claude_in_Chrome__tabs_create_mcp`. Use this tab for everything.
+4. Create a fresh tab with `mcp__Claude_in_Chrome__tabs_create_mcp`. Use this tab for everything.
 
-4. Navigate to `https://www.linkedin.com/in/me/` (redirects to login if not logged in).
+5. Navigate to `https://www.linkedin.com/in/me/` (redirects to login if not logged in).
 
-5. Read page with `mcp__Claude_in_Chrome__get_page_text`.
-   - Redirected to login → **stop**: "LinkedIn not logged in. Log in as <profile name> and run `/jobs` again."
+6. Read page with `mcp__Claude_in_Chrome__get_page_text`.
+   - Redirected to login → **stop**: "LinkedIn not logged in. Log in as <name from resume> and run `/jobs` again."
    - Extract the profile name shown on the page.
-   - Name ≠ profile name from `profile/profile.md` → **stop**: "Wrong profile active — found '<name>', expected '<profile name>'. Switch profiles and run `/jobs` again."
-   - Matches → print: `✓ Chrome connected · LinkedIn: <profile name>` and continue.
+   - Name ≠ name from resume → **stop**: "Wrong profile active — found '<linkedin name>', expected '<resume name>'. Switch profiles and run `/jobs` again."
+   - Matches → print: `✓ Chrome connected · LinkedIn: <name>` and continue.
 
 ---
 

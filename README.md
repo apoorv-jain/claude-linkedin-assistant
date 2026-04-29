@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>A Claude Code workspace for running a job search out of LinkedIn.</strong>
+  <strong>A Claude Code assistant for LinkedIn.</strong>
 </p>
 
 <p align="center">
@@ -19,7 +19,7 @@
   <a href="#privacy"><strong>Privacy</strong></a>
 </p>
 
-A Claude Code workspace for running a job search out of LinkedIn. Track jobs in a single CSV, discover new openings via LinkedIn + web search, send connection requests and first DMs at companies you're targeting.
+A Claude Code assistant for LinkedIn. Track jobs in a single CSV, discover new openings via LinkedIn + web search, send connection requests and first DMs at companies you're targeting.
 
 > **Scope on purpose:** Claude only does the safe, repetitive parts. You handle anything that requires judgment (replies, applications, attachments, follow-ups).
 

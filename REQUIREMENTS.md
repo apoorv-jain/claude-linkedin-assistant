@@ -10,11 +10,15 @@ Pre-installed on macOS / most Linux distros. Verify:
 git --version
 ```
 
-## 2. Claude Code desktop app (mandatory)
+## 2. Claude Code, installed locally (mandatory)
 
-The local desktop install of Claude Code is what runs the `/jobs` flows. Install: <https://docs.claude.com/en/docs/claude-code>
+Either the CLI or the desktop app works. Install: <https://docs.claude.com/en/docs/claude-code>
 
 The web version at claude.ai/code will NOT work for this repo. The flows need to (a) read your resume files in `resumes/`, and (b) drive the Claude in Chrome extension — both require a local install.
+
+**Open the repo:**
+- CLI: `cd claude-linkedin-assistant && claude`
+- Desktop app: File → Open Folder → pick `claude-linkedin-assistant`
 
 ## 3. Claude in Chrome extension (mandatory)
 
@@ -43,15 +47,13 @@ gh auth login
 
 ```bash
 git --version && echo "git ✓"
-claude --version && echo "claude ✓"
+claude --version 2>/dev/null && echo "claude CLI ✓" || echo "claude CLI not installed (OK if you use the desktop app)"
 ```
 
-Then open the repo in Claude Code:
+Then open the repo in Claude Code (whichever way you installed it):
 
-```bash
-cd claude-linkedin-assistant
-claude
-```
+- **CLI:** `cd claude-linkedin-assistant && claude`
+- **Desktop app:** launch the app, File → Open Folder → pick `claude-linkedin-assistant`
 
 In Claude Code, run `/jobs` to start.
 

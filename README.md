@@ -1,8 +1,29 @@
-# Claude LinkedIn Assistant
+<p align="center">
+  <img src="assets/logo.png" width="600" alt="Claude LinkedIn Assistant" />
+</p>
 
-A Claude Code workspace for running a job search out of LinkedIn. Track jobs in a single CSV, discover new openings via LinkedIn + web search, and send a first outreach message to existing 1st-degree connections at companies you're targeting.
+<p align="center">
+  <strong>A Claude Code workspace for running a job search out of LinkedIn.</strong>
+</p>
 
-**Scope on purpose:** Claude only does the safe, repetitive parts. You handle anything that requires judgment (replies, applications, attachments, follow-ups).
+<p align="center">
+  Track jobs in a CSV. Discover openings via LinkedIn + web search. Send connection requests and first DMs at companies you're targeting. The rest is yours.
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green.svg"></a>
+  <img alt="Claude Code" src="https://img.shields.io/badge/Claude%20Code-Ready-orange">
+  <img alt="LinkedIn" src="https://img.shields.io/badge/LinkedIn-via%20Chrome%20MCP-0A66C2?logo=linkedin&logoColor=white">
+</p>
+
+<p align="center">
+  <a href="#quick-start"><strong>Quick Start</strong></a> ·
+  <a href="#what-it-does"><strong>What it does</strong></a> ·
+  <a href="#daily-flow"><strong>Daily flow</strong></a> ·
+  <a href="#privacy"><strong>Privacy</strong></a>
+</p>
+
+> **Scope on purpose:** Claude only does the safe, repetitive parts. You handle anything that requires judgment (replies, applications, attachments, follow-ups).
 
 ## Quick Start
 

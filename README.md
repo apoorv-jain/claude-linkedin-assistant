@@ -25,31 +25,58 @@ A Claude Code workspace for running a job search out of LinkedIn. Track jobs in 
 
 ## Quick Start
 
+Before anything else, you'll want three things installed:
+
+- **[Claude Code desktop app](https://docs.claude.com/en/docs/claude-code)** — this is the app where you'll actually run everything. It has to be the desktop app, not the web version at claude.ai/code. The web version can't see your local files (resume, tracker CSV, contact log) and can't drive the Chrome extension, so it just won't work for this repo.
+- **[Claude in Chrome extension](https://claude.com/claude-in-chrome)** — this is how Claude drives LinkedIn for you. Install it in Chrome, sign in to your LinkedIn account in that same browser, and keep the window open whenever you run a `/jobs` flow. Without this extension, none of the LinkedIn automation works.
+- **Git** — already on your Mac. You'll only use it once, in step 1 below.
+
+Once you've got those, here's the flow.
+
+### 1. Clone the repo
+
+Open your terminal and run:
+
 ```bash
-# 1. Clone
 git clone https://github.com/FarzamHejaziK/claude-linkedin-assistant.git
 cd claude-linkedin-assistant
+```
 
-# 2. Install the Claude in Chrome extension and sign into LinkedIn:
-#    https://claude.com/claude-in-chrome
+That's it for the terminal. Everything else happens inside the Claude Code app.
 
-# 3. Drop your resume into the resumes/ folder. Any format works (.pdf, .tex, .md, .docx).
+### 2. Drop your resume into `resumes/`
+
+There's no profile file or settings form to fill out. Claude reads your resume directly to figure out your name (so it can verify the right LinkedIn account is signed in), your target roles + top skills (for `/jobs find` searches), and a short pitch (for the outreach DM template). Just drop your resume into the `resumes/` folder:
+
+```bash
 cp ~/Documents/your_resume.pdf resumes/
 ```
 
-4. **Open the [Claude Code desktop app](https://docs.claude.com/en/docs/claude-code).** File → Open Folder → pick the `claude-linkedin-assistant` folder you just cloned.
+`.pdf`, `.tex`, `.md`, or `.docx` all work. If you have role-specific versions, drop them all in — the flows read everything and use the union of titles + skills.
 
-Then in the app:
+### 3. Open the folder in Claude Code
+
+Launch the **Claude Code desktop app**, then **File → Open Folder** and pick the `claude-linkedin-assistant` folder you just cloned. The app loads the workspace and finds all the `/jobs` commands automatically.
+
+### 4. Run `/jobs`
+
+In the chat, type `/jobs` and hit enter. The first thing it does, every time, is verify that the Chrome extension is connected and the LinkedIn account signed in matches the name on your resume. If something's off, it tells you exactly what to fix instead of guessing.
+
+After that, you've got the menu:
 
 ```
-/jobs                       # show the menu
-/jobs daily                 # walk the full daily flow (find → check → outreach + commit)
-/jobs find                  # discover new jobs and add to the tracker
-/jobs check                 # daily dashboard
-/jobs outreach <Company>    # send first DMs to your 1st-degree connections at <Company>
+/jobs                       # show the menu (start here the first time)
+/jobs daily                 # walk the full daily flow end-to-end
+/jobs find                  # discover new jobs and add them to the tracker
+/jobs check                 # daily dashboard: what's pending, what's stale
+/jobs outreach <Company>    # connection requests + first DMs at <Company>
+/jobs add                   # manually add a job you found somewhere else
+/jobs update                # change a job's status (Phone Screen, Onsite, Rejected)
 ```
 
-That's the whole loop. See [Requirements](#requirements) if any prereqs are missing, [What it does](#what-it-does) for the per-flow scope, and [Daily flow](#daily-flow) for what each step does.
+If you just want to see it run, do `/jobs daily` — it walks you through one full day end to end.
+
+For more detail on any of these, see [What it does](#what-it-does), [Daily flow](#daily-flow), or [REQUIREMENTS.md](REQUIREMENTS.md).
 
 ## What it does
 
@@ -69,15 +96,6 @@ That's the whole loop. See [Requirements](#requirements) if any prereqs are miss
 - ❌ **No personalized connection-request notes.** All connection requests go through "Send without a note" to conserve LinkedIn's monthly personalized-invite quota.
 
 If you want a more full-featured workflow (resume tailoring, reply handling, application form auto-fill), fork this repo and extend it. This version is intentionally minimal so it's safe to share.
-
-## Requirements
-
-1. **[Claude Code desktop app](https://docs.claude.com/en/docs/claude-code)** — the local desktop install is what runs this workspace. The web version at claude.ai/code will NOT work because it can't read your local `resumes/` folder or drive the Chrome extension.
-2. **[Claude in Chrome extension](https://claude.com/claude-in-chrome)** — Claude needs this to navigate LinkedIn. Install it, then sign into your LinkedIn account in that browser.
-3. **Git** (pre-installed on macOS / most Linux distros).
-4. **GitHub CLI** (optional) — only if you want to push your fork.
-
-See [REQUIREMENTS.md](REQUIREMENTS.md) for setup details.
 
 ## Daily flow
 

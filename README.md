@@ -4,6 +4,36 @@ A Claude Code workspace for running a job search out of LinkedIn. Track jobs in 
 
 **Scope on purpose:** Claude only does the safe, repetitive parts. You handle anything that requires judgment (replies, applications, attachments, follow-ups).
 
+## Quick Start
+
+```bash
+# 1. Clone
+git clone https://github.com/FarzamHejaziK/claude-linkedin-assistant.git
+cd claude-linkedin-assistant
+
+# 2. Install the Claude in Chrome extension and sign into LinkedIn:
+#    https://claude.com/claude-in-chrome
+
+# 3. Copy the profile template and fill it in (your name, target roles, pitch)
+cp profile/profile.template.md profile/profile.md
+$EDITOR profile/profile.md
+
+# 4. Open the repo in Claude Code
+claude
+```
+
+Then in Claude Code:
+
+```
+/jobs                       # show the menu
+/jobs daily                 # walk the full daily flow (find → check → outreach + commit)
+/jobs find                  # discover new jobs and add to the tracker
+/jobs check                 # daily dashboard
+/jobs outreach <Company>    # send first DMs to your 1st-degree connections at <Company>
+```
+
+That's the whole loop. See [Requirements](#requirements) if any prereqs are missing, [What it does](#what-it-does) for the per-flow scope, and [Daily flow](#daily-flow) for what each step does.
+
 ## What it does
 
 | Feature | Command | Who does what |
@@ -31,33 +61,6 @@ If you want a more full-featured workflow (resume tailoring, reply handling, app
 4. **GitHub CLI** (optional) — only if you want to push your fork.
 
 See [REQUIREMENTS.md](REQUIREMENTS.md) for setup details.
-
-## Setup
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/<your-username>/claude-linkedin-assistant.git
-cd claude-linkedin-assistant
-
-# 2. Fill in your profile (used to verify the right LinkedIn account is active + write outreach messages)
-cp profile/profile.template.md profile/profile.md
-$EDITOR profile/profile.md
-
-# 3. (Optional) Fill in personal info template if you want to reuse it later
-cp profile/personal_info.template.json profile/personal_info.json
-$EDITOR profile/personal_info.json
-
-# 4. Open the repo in Claude Code
-claude
-```
-
-Then in Claude Code:
-
-```
-/jobs
-```
-
-That runs the menu. Pick a sub-command, or jump straight in: `/jobs find`, `/jobs check`, `/jobs outreach Mixpanel`.
 
 ## Daily flow
 

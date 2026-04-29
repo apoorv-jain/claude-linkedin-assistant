@@ -1,0 +1,46 @@
+{
+  "_comment": "Copy this file to profile/personal_info.json and fill in. Optional — not used by the default /jobs flows in this public repo. Provided as a starting schema if you want to extend the workflow with application form auto-fill, screening-answer storage, etc.",
+
+  "full_name": "First Last",
+  "preferred_name": "First",
+  "email": "you@example.com",
+  "phone": "+1XXXXXXXXXX",
+  "location": {
+    "city": "",
+    "state": "",
+    "zip": "",
+    "country": "United States"
+  },
+  "linkedin_url": "https://www.linkedin.com/in/<your-handle>",
+  "github_url": "",
+  "portfolio_url": "",
+  "current_company": "",
+  "current_title": "",
+  "years_of_experience": "",
+  "work_authorization": "",
+  "sponsorship_required": "",
+  "education": [
+    {
+      "degree": "",
+      "university": "",
+      "graduation_year": ""
+    }
+  ],
+  "salary_expectations": {
+    "min": "",
+    "max": "",
+    "note": ""
+  },
+  "availability": "",
+  "veteran_status": "",
+  "disability_status": "",
+  "gender": "",
+  "ethnicity": "",
+  "national_origin": "",
+  "how_did_you_hear": "LinkedIn",
+  "work_preferences": {
+    "open_to_onsite": true,
+    "max_onsite_days_per_week": "any",
+    "commute_note": ""
+  }
+}

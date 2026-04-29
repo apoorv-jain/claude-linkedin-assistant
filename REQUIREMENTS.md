@@ -10,9 +10,11 @@ Pre-installed on macOS / most Linux distros. Verify:
 git --version
 ```
 
-## 2. Claude Code (mandatory)
+## 2. Claude Code desktop app (mandatory)
 
-The CLI that runs the `/jobs` flows. Install: <https://docs.claude.com/en/docs/claude-code>
+The local desktop install of Claude Code is what runs the `/jobs` flows. Install: <https://docs.claude.com/en/docs/claude-code>
+
+The web version at claude.ai/code will NOT work for this repo. The flows need to (a) read your resume files in `resumes/`, and (b) drive the Claude in Chrome extension — both require a local install.
 
 ## 3. Claude in Chrome extension (mandatory)
 

@@ -73,7 +73,7 @@ If you want a more full-featured workflow (resume tailoring, reply handling, app
 
 ## Requirements
 
-1. **[Claude Code](https://docs.claude.com/en/docs/claude-code)** — the CLI that runs this workspace.
+1. **[Claude Code desktop app](https://docs.claude.com/en/docs/claude-code)** — the local desktop install that runs this workspace. The web version (claude.ai/code) won't work because it can't read your local `resumes/` folder or drive the Chrome extension.
 2. **[Claude in Chrome extension](https://claude.com/claude-in-chrome)** — Claude needs this to navigate LinkedIn. Install it, then sign into your LinkedIn account in that browser.
 3. **Git** (pre-installed on macOS / most Linux distros).
 4. **GitHub CLI** (optional) — only if you want to push your fork.

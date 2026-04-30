@@ -1,3 +1,1 @@
 Priority,Company,Role,Location,Type,Salary,Status,Applied Date,Next Action,URL,Notes,Discovered Date,Referral Needed,Referral Status,Referral Deadline,Apply Via
-HIGH,ExampleCorp,Senior Data Scientist,San Francisco,Hybrid,$180K-$220K,To Apply,,Demo row - delete me,https://www.linkedin.com/jobs/view/0000000000,Sample row showing the schema. Replace with real jobs via /jobs add or /jobs find,2026-04-29,YES,Outreach Pending,2026-05-04,
-MEDIUM,SmallStartup,Data Analyst,Remote,Remote,,To Apply,,Demo row - delete me,https://example.com/jobs/data-analyst,Small company so Referral Needed=NO. Apply directly,2026-04-29,NO,Not Needed,,Company Website

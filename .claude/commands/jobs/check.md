@@ -1,6 +1,22 @@
 # CHECK (daily dashboard)
 
-Read `job_tracker.csv`. Show the sections below as markdown tables. Empty section → "None."
+## Step 0 — Empty-tracker guard (MANDATORY)
+
+Read `job_tracker.csv` and count the data rows (lines past the header).
+
+- **0 rows** → STOP the flow here. Do NOT show empty section tables. Do NOT fabricate or hallucinate jobs. Print exactly:
+
+  > Your tracker is empty. Nothing to dashboard yet. Run `/jobs find` to discover your first jobs, then `/jobs check` will have something to show.
+
+  Return immediately. Do not continue to the sections below.
+
+- **≥1 row** → continue to Step 1 below.
+
+---
+
+## Step 1 — Show sections
+
+For each section, render the matching rows as a markdown table. **Empty section → "None."** (Only after confirming the tracker has rows overall — never show "None" five times in a row, that's the empty-tracker case Step 0 already handled.)
 
 ---
 

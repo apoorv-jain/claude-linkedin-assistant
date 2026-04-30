@@ -14,7 +14,12 @@ Out of scope (you handle these manually):
 
 ## Step 1 — Pick a company
 
-Show jobs where `Referral Needed=YES` and `Referral Status` is `Outreach Pending` or `Connection Pending`:
+**Empty / no-candidates guard.** Read `job_tracker.csv`. If it has 0 data rows OR no rows match (`Referral Needed=YES` AND `Referral Status` ∈ `Outreach Pending` / `Connection Pending`):
+
+- If a `<Company>` argument was passed (`/jobs outreach Mixpanel`), continue with that company anyway — the user explicitly asked.
+- Otherwise STOP: "No companies queued for outreach. Run `/jobs find` to discover jobs (those flagged Referral Needed=YES will queue here), or `/jobs outreach <Company>` to force-run on a specific company."
+
+Otherwise show:
 
 | # | Company | Role | Referral Status | Deadline | Days Left |
 

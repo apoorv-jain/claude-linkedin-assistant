@@ -9,10 +9,11 @@ For ad-hoc work, run individual `/jobs <sub-command>` directly.
 ## How this command behaves
 
 1. Run STEP 0 (Chrome + LinkedIn check from `jobs.md`) once at the start.
-2. Walk through the steps below in order.
-3. Before each step, print a one-line preview of what's queued. If the queue is empty, auto-skip and announce.
-4. Between steps, ask: `[Enter] continue / [s] skip / [q] quit`. Proceed on continue, move to next on skip, exit on quit.
-5. At the end, run the commit step automatically and print the daily summary.
+2. **Pre-flight: read `job_tracker.csv`. If it has 0 data rows (just the header), this is a first-run / empty-tracker state.** Skip Step 1 (check) entirely — there's nothing to dashboard. Jump straight to Step 2 (find). Tell the user: "Tracker is empty, starting with discovery."
+3. Otherwise, walk through the steps below in order.
+4. Before each step, print a one-line preview of what's queued. If the queue is empty, auto-skip and announce.
+5. Between steps, ask: `[Enter] continue / [s] skip / [q] quit`. Proceed on continue, move to next on skip, exit on quit.
+6. At the end, run the commit step automatically and print the daily summary.
 
 If the user invokes a single sub-command from inside the daily flow (e.g. types `/jobs outreach Walmart`), exit the daily orchestrator and let that sub-command run standalone.
 
@@ -20,7 +21,9 @@ If the user invokes a single sub-command from inside the daily flow (e.g. types 
 
 ## Step 1 — `/jobs check` (dashboard)
 
-Read `check.md`, execute. Show all sections.
+**Skip if the tracker is empty** (per the pre-flight check above — go straight to Step 2).
+
+Otherwise: read `check.md`, execute. Show all sections.
 
 Then ask: continue / skip / quit?
 

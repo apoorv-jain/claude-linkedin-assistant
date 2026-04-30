@@ -1,5 +1,13 @@
 # UPDATE (status change)
 
+## Empty-tracker guard
+
+Read `job_tracker.csv`. If it has 0 data rows (just the header), STOP: "Your tracker is empty. Run `/jobs find` or `/jobs add` to put jobs in it before updating statuses." Do not show an empty table or ask which job to update.
+
+If there are rows but none are active (all are Offer/Rejected/Withdrew), tell the user: "No active jobs to update. All entries are in terminal states (Offer/Rejected/Withdrew). Add a new job with `/jobs add` or run `/jobs find`."
+
+---
+
 Show all active jobs (Status not in `Offer` / `Rejected` / `Withdrew`) as a markdown table. Ask which job and what the new status.
 
 ---

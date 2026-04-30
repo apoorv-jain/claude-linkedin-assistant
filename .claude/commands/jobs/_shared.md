@@ -5,7 +5,7 @@ Today's date: read from system (YYYY-MM-DD).
 
 ---
 
-## User resume — the source of truth
+## User resume — the source of truth about WHO they are
 
 Read whatever resume(s) the user has dropped into `resumes/`. Supported formats: `.pdf`, `.tex`, `.md`, `.docx`. Extract on demand:
 
@@ -17,6 +17,22 @@ Read whatever resume(s) the user has dropped into `resumes/`. Supported formats:
 If multiple resumes are present, read all of them and use the union. Never invent details that aren't on the resume.
 
 If `resumes/` is empty (only the README), stop the flow and tell the user to drop their resume in.
+
+## Search profile (optional) — the source of truth about WHAT they want
+
+Look for `resumes/search_profile.md`. This is an OPTIONAL free-form file where the user writes their specific job-search preferences: must-haves, deal-breakers, interest areas, salary floors, location constraints, company-size preferences, anything that's not on the resume.
+
+If it exists:
+- Read it as plain prose. No structured schema is enforced — it can be bullets, paragraphs, mixed.
+- Treat it as **higher-priority signal than the resume** when there's a conflict. The resume says what the user *can* do; the search profile says what they *want* to do.
+- Examples of how it shapes flows:
+  - "Remote only" → drop on-site results from `/jobs find`, even if the resume has a city in the contact line.
+  - "$200K minimum" → boost or filter on salary in the score.
+  - "Climate tech" → add to the keyword pool for searches and scoring.
+  - "No crypto" → exclude matching jobs entirely.
+  - "Senior IC, no people management" → drop manager-track titles.
+
+If it doesn't exist, the search profile is inferred entirely from the resume. Don't tell the user this is missing — the file is optional.
 
 ---
 

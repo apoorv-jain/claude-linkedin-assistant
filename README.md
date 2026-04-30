@@ -51,6 +51,8 @@ There's no profile file or settings form to fill out. Claude reads your resume d
 
 Just put your resume into the `resumes/` folder however you normally move a file — drag it in from Finder, copy it from wherever you keep your latest version, whatever's easiest. `.pdf`, `.tex`, `.md`, and `.docx` all work. If you have role-specific versions of your resume, drop them all in — the flows read everything in there and use the union of titles + skills.
 
+**Optional, but powerful:** drop a `search_profile.md` in the same folder if you want to tell the search flow more than your resume implies. Free-form prose: must-haves ("Remote only"), deal-breakers ("no crypto"), interest areas ("climate tech"), salary floor ("$200K min"), anything you'd tell a friend who was about to forward you job listings. `/jobs find` reads it on every run and uses it to filter and score. See [`resumes/README.md`](resumes/README.md) for an example.
+
 ### 3. Open the folder in Claude Code
 
 Launch the **Claude Code desktop app**, then **File → Open Folder** and pick the `claude-linkedin-assistant` folder you just cloned. The app loads the workspace and finds all the `/jobs` commands automatically.
@@ -77,7 +79,7 @@ For more detail on any of these, see [What it does](#what-it-does), [Daily flow]
 
 ## How it works
 
-The whole thing is built around two files that hold all the state. Your resume in `resumes/` is the source of truth about *you* — name, target roles, skills, pitch. `job_tracker.csv` is the source of truth about the *jobs* — every job you've ever looked at is a row there, with status, priority, dates, deadlines. Claude reads from these and writes back to them. There's no database, no hidden state, no settings panel. Want to see what's going on at any moment? Open the CSV.
+The whole thing is built around two files that hold all the state. Your resume in `resumes/` is the source of truth about *you* — name, target roles, skills, pitch — i.e. what you *can* do. An optional `resumes/search_profile.md` is the source of truth about what you *want* to do — must-haves, deal-breakers, interest areas, salary floor. And `job_tracker.csv` is the source of truth about the *jobs* — every job you've ever looked at is a row there, with status, priority, dates, deadlines. Claude reads from these and writes back to them. There's no database, no hidden state, no settings panel. Want to see what's going on at any moment? Open the CSV.
 
 When you run any `/jobs` command, the very first thing it does is open Chrome via the extension and check that LinkedIn is signed in to the right account (matching the name it just read from your resume). If something's off — extension not connected, wrong account active, redirected to the login page — it stops and tells you exactly what to fix. This happens every time, on every command, so you never run a flow against the wrong account by accident.
 

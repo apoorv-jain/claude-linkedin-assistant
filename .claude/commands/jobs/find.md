@@ -1,22 +1,37 @@
 # FIND (live job search)
 
-## Step 1 — Read the user's resume(s) and infer search profile
+## Step 1 — Read resume(s) AND search profile, then build the search plan
 
-Read every resume file in `resumes/` (skip the README). Extract:
+### 1A. Resume
+
+Read every resume file in `resumes/` (skip the README and `search_profile.md`). Extract:
 
 - **Target roles** — the user's most recent role title + adjacent titles (e.g. if they're a "Senior Data Scientist", also search "Staff Data Scientist", "Senior Product Data Scientist", "Lead Data Scientist"). Pull 3-6 titles total.
 - **Top keywords / skills** — 10-15 from the skills section + repeated terms across bullets (technologies, methodologies, domain terms).
 - **Default location** — the city/state from the resume's contact line.
 
-If `resumes/` has nothing useful (only the README), stop and tell the user to drop their resume in.
+If `resumes/` has no resume (only the README and/or `search_profile.md`), stop and tell the user to drop their resume in.
 
-Ask the user once at the start of the run (single line):
+### 1B. Search profile (optional, but read every time)
 
-> "Search profile inferred from resume: titles=<list>, keywords=<list>, location=<city/state>+Remote. Override anything? [Enter to accept]"
+Look for `resumes/search_profile.md`. If present, read the whole file as free-form prose. Apply it as overlays on the resume-inferred plan:
 
-Common overrides: switch the city, restrict to Remote only, narrow titles. Accept whatever they say verbatim, then proceed.
+- **Locations:** if the search profile names locations, those replace the resume's default. (Example: profile says "Remote only" → drop the resume's city, search Remote only.)
+- **Titles:** if the profile mentions specific titles or role types, narrow the title list to match. If it explicitly excludes some (e.g. "no people management"), drop manager-track titles.
+- **Keywords:** add any domain interests from the profile (e.g. "climate tech", "LLM infra") to the keyword pool used for searches and scoring.
+- **Salary floor:** if the profile gives a number, use it for scoring (jobs at or above floor get +1).
+- **Deal-breakers:** if the profile lists exclusions (e.g. "no crypto"), drop matching jobs entirely from results, before scoring.
+- **Company-size or stage preferences:** keep in mind for the score; small-company-only profile + a Fortune-500 result → drop or score low.
 
-**No salary filter by default** — salary expectations aren't on most resumes. If the user wants a salary floor in scoring, they'll mention it at the override prompt.
+If the search profile contradicts the resume (e.g. resume is full of ML, profile says "I want to switch to PM"), the profile wins. The resume describes what the user *can* do; the profile describes what they *want* to do.
+
+### 1C. Confirm with the user (one line)
+
+> "Search plan: titles=<list>, keywords=<list>, location=<list>, salary floor=<value or none>, exclusions=<list or none>. Override anything? [Enter to accept]"
+
+Show the plan. Let the user accept or tweak it inline. Then proceed.
+
+**No salary filter unless the search profile or the user override sets one.**
 
 ---
 
@@ -49,14 +64,17 @@ Combine all results into one pool.
 
 **Dedup:** Remove any result where Company + similar Role already exists in `job_tracker.csv`. Track skipped names to report at the end.
 
-**Score each job (0-10) against the inferred search profile:**
+**Score each job (0-10) against the search plan from Step 1:**
 
 - Title matches a target role exactly: +3
 - Title is adjacent (e.g. "Staff" instead of "Senior", or "Analyst" vs "Scientist" with overlapping skills): +1.5
-- Location matches the user's location OR is Remote: +2
-- Each keyword overlap with the resume's top keywords: +0.5 (cap at +3)
+- Location matches a profile-allowed location OR is Remote (when profile allows Remote): +2
+- Each keyword overlap (resume keywords ∪ search profile interests): +0.5 (cap at +3)
 - Posted ≤7 days ago: +1
-- Salary in user's stated range (only if the user provided one at the override prompt): +1
+- Salary at or above the profile's stated floor (skip this rule if no floor was given): +1
+- **Search profile match for company stage / size / domain** (e.g. profile says "climate tech", job is at a climate-tech company): +1
+
+**Hard exclusions from the search profile** (deal-breakers like "no crypto", "no consulting"): drop the job entirely BEFORE scoring. Don't surface it in the results table.
 
 Drop jobs where total score < 4. Sort descending. Take top 20.
 

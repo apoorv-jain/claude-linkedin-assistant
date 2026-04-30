@@ -18,6 +18,7 @@ See `README.md` for the user-facing overview and `REQUIREMENTS.md` for setup. Th
 | `.claude/commands/jobs/_shared.md` | Shared rules loaded by every `/jobs` sub-flow |
 | `.claude/commands/jobs/{find,check,add,update,outreach,daily}.md` | Per-flow procedures |
 | `resumes/` | User's resume(s). Source of truth for name, target roles, skills, pitch |
+| `resumes/search_profile.md` | (Optional) free-form preferences: must-haves, deal-breakers, interest areas, salary floor, locations. Overrides resume-inferred defaults during `/jobs find`. |
 
 ## User resume — the source of truth
 
@@ -31,6 +32,10 @@ This repo has **no separate profile file**. Everything Claude needs about the us
 If `resumes/` is empty (only the README), stop the flow and tell the user to drop their resume in there before running anything.
 
 If multiple resumes are present, read all of them and use the union of titles + skills.
+
+## Optional search profile — what the user wants
+
+If `resumes/search_profile.md` exists, read it alongside the resume. It's free-form prose: must-haves, deal-breakers, interest areas, salary floor, locations, anything that's not on the resume. Apply it as overlays on top of the resume-inferred plan in `/jobs find`. **The search profile wins on conflict** — the resume describes what the user *can* do, the search profile describes what they *want* to do. See `_shared.md` and `find.md` for how it's applied. The file is optional; if it doesn't exist, fall back to the resume entirely and don't pester the user about it.
 
 ## Hard rules
 

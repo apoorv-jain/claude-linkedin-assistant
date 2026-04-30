@@ -17,9 +17,36 @@ Any of these:
 
 You can drop multiple resumes here if you have role-specific versions (e.g. `resume_data_scientist.pdf`, `resume_ml_engineer.pdf`). The flows read all of them and use the union of titles + skills.
 
+## Optional: `search_profile.md`
+
+If you want to give the search flow more specific guidance than your resume implies, drop a file called `search_profile.md` next to your resume in this folder. Free-form prose — anything you'd normally tell a friend who was about to send you job listings. The `/jobs find` flow reads this on every run and uses it to filter and score results.
+
+Examples of what to put in there:
+
+```markdown
+# Job search profile
+
+## Must-haves
+- Remote, or Bay Area onsite (no other locations)
+- $180K base minimum
+- Senior IC or Staff level (no people management)
+
+## Interests
+- Climate tech, energy, sustainability
+- Companies under 500 employees, ideally Series B / C
+- Anything experimentation / causal inference / product analytics
+
+## Deal-breakers
+- Crypto / web3
+- Pure consulting roles
+- "Founding engineer" titles at <$150K
+```
+
+Format is loose — bullets, paragraphs, whatever. The LLM reads it as plain text. If the file doesn't exist, the search profile is inferred entirely from your resume (titles + skills + location).
+
 ## What's NOT in this folder
 
-- ❌ A separate "profile" or "personal info" file. Your resume already has your name, contact info, and experience. Don't duplicate it.
+- ❌ A "personal info" file with name, phone, address, etc. Your resume already has that.
 - ❌ Cover letters. This repo doesn't apply on your behalf.
 
 ## Privacy

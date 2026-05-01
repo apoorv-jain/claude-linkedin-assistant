@@ -35,7 +35,15 @@ If multiple resumes are present, read all of them and use the union of titles + 
 
 ## Optional search profile — what the user wants
 
-If `resumes/search_profile.md` exists, read it alongside the resume. It's free-form prose: must-haves, deal-breakers, interest areas, salary floor, locations, anything that's not on the resume. Apply it as overlays on top of the resume-inferred plan in `/jobs find`. **The search profile wins on conflict** — the resume describes what the user *can* do, the search profile describes what they *want* to do. See `_shared.md` and `find.md` for how it's applied. The file is optional; if it doesn't exist, fall back to the resume entirely and don't pester the user about it.
+If `resumes/search_profile.md` exists, read it alongside the resume. It's free-form prose: must-haves, deal-breakers, interest areas, salary floor, locations, anything that's not on the resume. Apply it as overlays on top of the resume-inferred plan in `/jobs find`. **The search profile wins on conflict** — the resume describes what the user *can* do, the search profile describes what they *want* to do. See `_shared.md` and `find.md` for how it's applied.
+
+**Build the search profile WITH the user, not as homework.** When introducing the workspace, when starting a flow that would benefit from one, or any time the user mentions a preference ("I only want remote roles", "no crypto", "I'm into climate tech"), offer to build the file together. Don't tell them to "drop a search_profile.md" as if they have to write it themselves. Say something like:
+
+> "Want me to build a search profile with you? Tell me your must-haves (locations, salary floor, level, role types), deal-breakers (industries, role shapes), and interest areas — I'll write `resumes/search_profile.md` for you."
+
+When the user describes preferences in chat, capture them and **write `resumes/search_profile.md` using the Write tool** in the structured format from `resumes/README.md` (Must-haves / Interests / Deal-breakers / Salary). If the file already exists, read it first, then merge the new preferences in.
+
+If the user clearly doesn't want a profile and wants to skip, fine — fall back to resume-only inference and don't keep nagging.
 
 ## Hard rules
 

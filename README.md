@@ -51,7 +51,12 @@ There's no profile file or settings form to fill out. Claude reads your resume d
 
 Just put your resume into the `resumes/` folder however you normally move a file — drag it in from Finder, copy it from wherever you keep your latest version, whatever's easiest. `.pdf`, `.tex`, `.md`, and `.docx` all work. If you have role-specific versions of your resume, drop them all in — the flows read everything in there and use the union of titles + skills.
 
-**Optional, but powerful:** drop a `search_profile.md` in the same folder if you want to tell the search flow more than your resume implies. Free-form prose: must-haves ("Remote only"), deal-breakers ("no crypto"), interest areas ("climate tech"), salary floor ("$200K min"), anything you'd tell a friend who was about to forward you job listings. `/jobs find` reads it on every run and uses it to filter and score. See [`resumes/README.md`](resumes/README.md) for an example.
+**Optional, but powerful:** a search profile telling the find flow what you actually *want* (vs. what your resume says you *can* do): must-haves ("Remote only"), deal-breakers ("no crypto"), interest areas ("climate tech"), salary floor ("$200K min"). You can either:
+
+- **Build it together with the agent.** Just tell it your preferences in chat ("I only want remote senior IC roles in climate tech, $180K minimum, no crypto") and it'll write `resumes/search_profile.md` for you.
+- **Write it yourself** — see [`resumes/README.md`](resumes/README.md) for the format.
+
+`/jobs find` reads the profile on every run and uses it to filter and score. If you skip it, the search falls back to whatever it can infer from your resume.
 
 ### 3. Open the folder in Claude Code
 

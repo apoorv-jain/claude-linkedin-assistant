@@ -19,7 +19,9 @@ You can drop multiple resumes here if you have role-specific versions (e.g. `res
 
 ## Optional: `search_profile.md`
 
-If you want to give the search flow more specific guidance than your resume implies, drop a file called `search_profile.md` next to your resume in this folder. Free-form prose — anything you'd normally tell a friend who was about to send you job listings. The `/jobs find` flow reads this on every run and uses it to filter and score results.
+If you want to give the search flow more specific guidance than your resume implies, you can have a `search_profile.md` next to your resume in this folder. Free-form prose — anything you'd normally tell a friend who was about to send you job listings. The `/jobs find` flow reads this on every run and uses it to filter and score results.
+
+**You don't have to write it yourself.** Tell the agent your preferences in chat (e.g. *"I only want senior IC roles, remote or Bay Area, $180K minimum, climate tech preferred, no crypto, no consulting"*) and it'll write `resumes/search_profile.md` for you. You can also drop a written file in directly if you'd rather.
 
 Examples of what to put in there:
 

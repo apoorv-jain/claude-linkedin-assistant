@@ -180,6 +180,14 @@ Open in any spreadsheet app or use the `/jobs check` dashboard.
 
 If you fork to a private repo and want to commit your resume too, edit `.gitignore`.
 
+## Contributing
+
+Pull requests only. Direct pushes to `main` are blocked.
+
+- See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the workflow.
+- See [`MAINTAINERS.md`](MAINTAINERS.md) for the approval model (single-maintainer, [@FarzamHejaziK](https://github.com/FarzamHejaziK) approves all PRs).
+- For security reports, see [`SECURITY.md`](SECURITY.md) and email instead of opening a public Issue.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

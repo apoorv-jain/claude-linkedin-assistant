@@ -14,22 +14,18 @@ Out of scope (you handle these manually):
 
 ## Step 1 — Pick a company
 
-**Empty / no-candidates guard.** Read `job_tracker.csv`. If it has 0 data rows OR no rows match (`Referral Needed=YES` AND `Referral Status` ∈ `Outreach Pending` / `Connection Pending`):
+**If the command was called with an argument** (`/jobs outreach Mixpanel`), use that company. Skip the rest of this step.
 
-- If a `<Company>` argument was passed (`/jobs outreach Mixpanel`), continue with that company anyway — the user explicitly asked.
-- Otherwise STOP: "No companies queued for outreach. Run `/jobs find` to discover jobs (those flagged Referral Needed=YES will queue here), or `/jobs outreach <Company>` to force-run on a specific company."
+**Otherwise**, read `job_tracker.csv` for outreach candidates: rows where `Referral Needed=YES` AND `Referral Status` ∈ `Outreach Pending` / `Connection Pending`.
 
-Otherwise show:
+- **Has candidates** → auto-pick the most urgent one: smallest `Days Left` (Referral Deadline − today; negative = overdue first). Tiebreaker: oldest `Discovered Date`. Print:
+  > `Picked: <Company> — <Role> (deadline in <N> days)`
 
-| # | Company | Role | Referral Status | Deadline | Days Left |
+  Proceed to Step 2 immediately. No confirmation prompt. (If you want to override, stop the run and re-invoke as `/jobs outreach <OtherCompany>`.)
 
-Days Left = Referral Deadline − today (negative = overdue).
+- **No candidates in the tracker** → ASK the user: "Tracker has no companies queued for outreach. Which company do you want to run outreach on? (You can also run `/jobs find` first to discover jobs.)" Wait for a company name, then proceed with that.
 
-Ask: "Which company?"
-
-Direct argument shortcut: `/jobs outreach <Company>` jumps straight to that company.
-
-If the chosen company is `Connection Pending`, jump to **Step 4 — Check pending acceptances**.
+If the picked company is `Connection Pending`, jump to **Step 4 — Check pending acceptances** instead of Step 2.
 
 ---
 
@@ -158,14 +154,9 @@ The pronoun: infer from the name if obvious, otherwise default to omitting the p
 > Thanks,
 > <user's first name>
 
-Show the draft. Ask: "Send, edit, or skip?"
+**Send directly, no confirmation.** Find the Message button → click → fill the message field with the draft → click Send. Then move on to the next contact in the loop.
 
-**On confirm:**
-- Find the Message button → click → fill the message field with the draft.
-- Ask: "Ready to send?"
-- On "yes" → click Send.
-- On "edit" → take the edit and re-show.
-- On "skip" → close the dialog, log `Skipped (user choice)`, move on.
+If LinkedIn shows a CAPTCHA, "Verify it's you", or any rate-limit notice mid-loop → STOP immediately (same Step 4B rule applies to DMs as to connection requests). Report which contacts were sent and which are still pending.
 
 ### D. Log
 
@@ -182,28 +173,23 @@ Update tracker: `Referral Status=Outreach Sent`. Append to Notes: `Outreach: <Na
 
 Apply the per-company quota from Step 2C. Pick the top N from the 2nd-degree ranked table (recruiters first, then peers, then leads).
 
-### A. Pre-batch confirmation
+### A. Pre-batch announcement (no confirmation)
 
-Show a summary to the user:
+Print a one-paragraph summary so the user can see what's about to happen scrolling past — but do NOT wait for confirmation:
 
 ```
-About to send <N> connection requests at <Company>:
-
+Sending <N> connection requests at <Company> (no-note path).
   1. <Name> — <Title>
   2. <Name> — <Title>
   ...
-
-All sent without a note ("Send without a note" path).
 Will stop early if LinkedIn shows a CAPTCHA or rate-limit notice.
-
-Confirm? [y / n / edit]
 ```
 
-Wait for explicit "y". On "edit", let the user remove names from the batch.
+Then proceed straight to the send loop in Step 4B.
 
 ### B. Send loop
 
-For each confirmed contact:
+For each contact in the batch:
 
 1. Navigate to the contact's profile URL.
 2. Find the **Connect** button. (If buried under "More", click More first.)
@@ -268,8 +254,7 @@ git commit -am "outreach: <Company> → <N> conn reqs, <M> DMs"
 
 - **Always "Send without a note"** for connection requests. Never click "Add a note".
 - **Per-company quota** from the formula in Step 2C. No global weekly cap — only LinkedIn-side blocks (CAPTCHA, rate-limit notice) stop the loop.
-- **Pre-batch confirmation** before sending connection requests. Single "y" confirms the whole batch; the user can edit out names first.
-- **Per-message confirmation** before sending DMs. Each first DM gets its own "Ready to send?" check.
+- **No per-message and no per-batch confirmations.** Connection requests fire silently up to the quota; DMs are typed and sent in the loop without asking. The only stop signal is a LinkedIn-side block.
 - **No em-dashes** in any drafted message. Scan for `—` and rewrite.
 - **No file attachments.** This flow is text-only LinkedIn (DMs and connection requests). If the user wants to send a resume, they do it manually after a contact agrees to refer.
 - **Don't ask the contact for their email** as a workaround for upload failures.

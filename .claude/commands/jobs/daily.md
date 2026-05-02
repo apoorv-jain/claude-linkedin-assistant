@@ -10,10 +10,9 @@ For ad-hoc work, run individual `/jobs <sub-command>` directly.
 
 1. Run STEP 0 (Chrome + LinkedIn check from `jobs.md`) once at the start.
 2. **Pre-flight: read `job_tracker.csv`. If it has 0 data rows (just the header), this is a first-run / empty-tracker state.** Skip Step 1 (check) entirely — there's nothing to dashboard. Jump straight to Step 2 (find). Tell the user: "Tracker is empty, starting with discovery."
-3. Otherwise, walk through the steps below in order.
+3. Otherwise, walk through the steps below in order, **end to end with no between-step prompts**. Each step runs to completion, then the next one starts automatically. The user is not asked to continue between steps.
 4. Before each step, print a one-line preview of what's queued. If the queue is empty, auto-skip and announce.
-5. Between steps, ask: `[Enter] continue / [s] skip / [q] quit`. Proceed on continue, move to next on skip, exit on quit.
-6. At the end, run the commit step automatically and print the daily summary.
+5. At the end, run the commit step automatically and print the daily summary.
 
 If the user invokes a single sub-command from inside the daily flow (e.g. types `/jobs outreach Walmart`), exit the daily orchestrator and let that sub-command run standalone.
 
@@ -23,17 +22,13 @@ If the user invokes a single sub-command from inside the daily flow (e.g. types 
 
 **Skip if the tracker is empty** (per the pre-flight check above — go straight to Step 2).
 
-Otherwise: read `check.md`, execute. Show all sections.
-
-Then ask: continue / skip / quit?
+Otherwise: read `check.md`, execute. Show all sections. Continue to Step 2 automatically.
 
 ---
 
 ## Step 2 — `/jobs find` (discover new jobs)
 
-Read `find.md`. Surface candidate jobs based on the user's profile.
-
-Then ask: continue / skip / quit?
+Read `find.md`. Surface candidate jobs based on the user's profile. Continue to Step 3 automatically.
 
 ---
 
@@ -41,9 +36,7 @@ Then ask: continue / skip / quit?
 
 For each job surfaced in Step 2, read `add.md` and add to the tracker. The find flow already auto-adds in batch — this step exists to handle anything the user wants to add manually that wasn't surfaced (e.g. a link they saw elsewhere).
 
-Skip if there's nothing manual to add.
-
-Then ask: continue / skip / quit?
+Skip if there's nothing manual to add. Continue to Step 4 automatically.
 
 ---
 
@@ -53,7 +46,7 @@ Then ask: continue / skip / quit?
 
 **Else:** for each new HIGH company that needs a referral, read `outreach.md` and run the sweep. The sweep does both: connection requests to 2nd-degree contacts ("Send without a note", per-company quota from Step 2C) AND first DMs to existing 1st-degree connections. Keep going across companies until LinkedIn pushes back (CAPTCHA / rate-limit notice) — at which point stop and tell the user.
 
-Then ask: ready to commit / skip commit / quit?
+Continue to Step 5 (commit) automatically.
 
 ---
 
@@ -73,9 +66,6 @@ Connection requests sent:
 
 Outreach DMs sent:
 - <Company>: <Name>
-
-Status updates:
-- <Company>: <old> → <new>
 
 EOF
 )"
@@ -107,6 +97,6 @@ Tomorrow's surface:
 
 - Connection requests always use "Send without a note". Per-company quota from `outreach.md` Step 2C; no global weekly cap (loop only stops on LinkedIn-side block per Step 4B).
 - Never sends a DM with an attachment. The first DM is text only.
-- Never click Send on a DM without explicit user confirmation per message. Connection-request batches use a single batch confirmation.
+- No per-message and no per-batch confirmations during outreach. The only stop signal is a LinkedIn-side block (CAPTCHA, rate-limit notice).
 - Never use em-dashes in any drafted message.
-- One commit at the end of the daily run, not per-step.
+- One commit at the end of the daily run, not per-step. No between-step prompts; the orchestrator runs end-to-end.

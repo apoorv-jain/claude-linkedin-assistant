@@ -25,13 +25,7 @@ Look for `resumes/search_profile.md`. If present, read the whole file as free-fo
 
 If the search profile contradicts the resume (e.g. resume is full of ML, profile says "I want to switch to PM"), the profile wins. The resume describes what the user *can* do; the profile describes what they *want* to do.
 
-### 1C. Confirm with the user (one line)
-
-> "Search plan: titles=<list>, keywords=<list>, location=<list>, salary floor=<value or none>, exclusions=<list or none>. Override anything? [Enter to accept]"
-
-Show the plan. Let the user accept or tweak it inline. Then proceed.
-
-**No salary filter unless the search profile or the user override sets one.**
+**No salary filter unless the search profile sets one.** Print the inferred plan as a one-line summary so the user can see it scrolling past, then proceed straight to Step 2 — no confirmation prompt.
 
 ---
 

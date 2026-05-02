@@ -75,8 +75,9 @@ After that, you've got the menu:
 /jobs check                 # daily dashboard: what's pending, what's stale
 /jobs outreach <Company>    # connection requests + first DMs at <Company>
 /jobs add                   # manually add a job you found somewhere else
-/jobs update                # change a job's status (Phone Screen, Onsite, Rejected)
 ```
+
+To change a job's status (Applied, Phone Screen, Onsite, Rejected), edit `job_tracker.csv` directly in Numbers, Excel, or VS Code. There's no separate update command — a one-cell edit is faster than a CLI prompt.
 
 If you just want to see it run, do `/jobs daily` — it walks you through one full day end to end.
 
@@ -102,7 +103,7 @@ When you run `/jobs daily`, it strings the four pipeline flows together — find
 |---|---|---|
 | Verify Chrome + LinkedIn login | (auto on every `/jobs` run) | Claude reads your name from your resume in `resumes/` and verifies the active LinkedIn profile matches |
 | Find new jobs | `/jobs find` | Claude reads your resume(s), searches LinkedIn + the web, scores and adds results to the tracker |
-| Track jobs | `/jobs check` · `/jobs add` · `/jobs update` | Claude reads/writes `job_tracker.csv` |
+| Track jobs | `/jobs check` · `/jobs add` | Claude reads/writes `job_tracker.csv`. Status edits are done by hand in the CSV. |
 | Outreach (cold sweep) | `/jobs outreach <Company>` | Claude sends connection requests to 2nd-degree contacts ("Send without a note") and a first DM to existing 1st-degree connections at that company |
 | Daily run | `/jobs daily` | Walks through find → check → outreach in one pass |
 
@@ -154,7 +155,6 @@ claude-linkedin-assistant/
             ├── find.md           ← discover jobs
             ├── check.md          ← daily dashboard
             ├── add.md            ← add a job to the tracker
-            ├── update.md         ← change status
             ├── outreach.md       ← first-message DM flow
             └── daily.md          ← orchestrator
 ```

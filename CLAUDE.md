@@ -4,7 +4,7 @@ Project rules loaded automatically when Claude works in this folder.
 
 ## What this is
 
-A minimal job-search workspace that pairs `job_tracker.csv` with four Claude-driven flows: find, check/add/update tracker rows, and send a first outreach DM to existing 1st-degree LinkedIn connections.
+A minimal job-search workspace that pairs `job_tracker.csv` with four Claude-driven flows: find, check, add, and send a first outreach DM to existing 1st-degree LinkedIn connections (status edits are done by hand directly in the CSV).
 
 See `README.md` for the user-facing overview and `REQUIREMENTS.md` for setup. The authoritative command flows live in `.claude/commands/jobs/`.
 
@@ -16,7 +16,7 @@ See `README.md` for the user-facing overview and `REQUIREMENTS.md` for setup. Th
 | `README.md` | Human-readable workflow overview |
 | `REQUIREMENTS.md` | Setup (Chrome extension, git) |
 | `.claude/commands/jobs/_shared.md` | Shared rules loaded by every `/jobs` sub-flow |
-| `.claude/commands/jobs/{find,check,add,update,outreach,daily}.md` | Per-flow procedures |
+| `.claude/commands/jobs/{find,check,add,outreach,daily}.md` | Per-flow procedures |
 | `resumes/` | User's resume(s). Source of truth for name, target roles, skills, pitch |
 | `resumes/search_profile.md` | (Optional) free-form preferences: must-haves, deal-breakers, interest areas, salary floor, locations. Overrides resume-inferred defaults during `/jobs find`. |
 
@@ -49,13 +49,11 @@ If the user clearly doesn't want a profile and wants to skip, fine — fall back
 
 1. **`job_tracker.csv` is the single source of truth.** When updating, preserve every untouched row exactly.
 2. **URL column is mandatory.** Every new job row must have a working apply link. Ask or search before saving.
-3. **Application folders are dated** if created: `applications/<YYYY-MM-DD>_<Company>_<Role>/`. Sanitize names (spaces → underscores, strip commas). This repo doesn't ship application infra by default; create the folder only if the user explicitly asks.
-4. **Date format:** always `YYYY-MM-DD`.
-5. **Render tracker contents as a clean markdown table** — never raw CSV.
-6. **NEVER use em-dashes (—) in any user-facing message the user sends** — emails, LinkedIn DMs, follow-ups, subject lines, anything outgoing. Use commas, periods, parentheses, or split sentences instead. Em-dashes are a tell of AI-written text. Scan every draft for `—` before showing it; rewrite if found. Internal notes, tracker, contacts files are fine.
-7. **For outreach DMs: you draft the message, the user sends it.** Browser MCP can navigate to the thread and type the message body, but you do NOT click Send without explicit confirmation. Standing flow: (a) navigate to the thread, (b) type the message body, (c) STOP and ask: "Ready to send?", (d) wait for the user to confirm before clicking Send.
-8. **Connection requests: always "Send without a note", never personalized.** LinkedIn rate-limits personalized invites; bulk connection requests must always go through the "Send without a note" button. **One confirmation per company batch** — show the user the full list of names, get a single "y" to send the whole batch. Per-company quota = `max(0, (10 − count_1st_degree) × 5)`. **No global weekly cap** — keep going until LinkedIn pushes back (CAPTCHA, rate-limit notice). See `.claude/commands/jobs/outreach.md` Step 2C and Step 4B.
-9. **Never attempt file uploads.** LinkedIn / Gmail / ATS file inputs are blocked from automation. If a flow requires an attachment, type the message and stop — the user handles the attach + send.
+3. **Date format:** always `YYYY-MM-DD`.
+4. **Render tracker contents as a clean markdown table** — never raw CSV.
+5. **NEVER use em-dashes (—) in any user-facing message the user sends** — emails, LinkedIn DMs, follow-ups, subject lines, anything outgoing. Use commas, periods, parentheses, or split sentences instead. Em-dashes are a tell of AI-written text. Scan every draft for `—` before showing it; rewrite if found. Internal notes, tracker, contacts files are fine.
+6. **Connection requests: always "Send without a note", never personalized.** LinkedIn rate-limits personalized invites; bulk connection requests must always go through the "Send without a note" button. Per-company quota = `max(0, (10 − count_1st_degree) × 5)`. **No global weekly cap** — keep going until LinkedIn pushes back (CAPTCHA, rate-limit notice). See `.claude/commands/jobs/outreach.md` Step 2C and Step 4B.
+7. **Never attempt file uploads.** LinkedIn / Gmail / ATS file inputs are blocked from automation. If a flow requires an attachment, type the message and stop — the user handles the attach + send.
 
 ## Canonical values
 
@@ -74,7 +72,7 @@ When `Referral Needed=YES`:
 
 ## Unified command
 
-Use `/jobs` for all tracker operations. Sub-flows: `daily` · `check` · `find` · `add` · `update` · `outreach`
+Use `/jobs` for all tracker operations. Sub-flows: `daily` · `check` · `find` · `add` · `outreach`
 
 ## Tone
 

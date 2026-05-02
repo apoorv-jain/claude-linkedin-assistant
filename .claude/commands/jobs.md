@@ -70,10 +70,9 @@ PIPELINE
   2  find         — discover new jobs via LinkedIn + web search
   3  add          — add a new job to the tracker (sets Referral Needed YES/NO)
   4  outreach     — send first DM to existing 1st-degree connections at a company
-
-OTHER
-  5  update       — change a job's status (Phone Screen, Onsite, Rejected, etc.)
 ```
+
+To change a job's status (e.g. mark Applied, Rejected, Onsite), open `job_tracker.csv` directly in Numbers/Excel/VS Code. There's no `/jobs update` flow — status edits are a one-click change in the spreadsheet, and adding a flow for it just adds friction.
 
 If argument given (e.g. `/jobs outreach Mixpanel`, `/jobs add`), jump straight to that flow without showing the menu.
 
@@ -91,6 +90,5 @@ Also **Read** `.claude/commands/jobs/_shared.md` alongside any sub-file — it c
 | find | `.claude/commands/jobs/find.md` |
 | add | `.claude/commands/jobs/add.md` |
 | outreach | `.claude/commands/jobs/outreach.md` |
-| update | `.claude/commands/jobs/update.md` |
 
 Read both `_shared.md` and the selected flow file before taking any action. The sub-files are self-contained and authoritative for their flow.

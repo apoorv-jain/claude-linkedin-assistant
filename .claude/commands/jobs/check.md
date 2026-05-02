@@ -34,7 +34,7 @@ Jobs where `Referral Status=Connection Pending` and the connection request was s
 
 **3. Referral deadlines passed**
 Jobs where `Referral Needed=YES`, `Referral Status` is `Outreach Pending` / `Outreach Sent` / `Connection Pending`, AND `Referral Deadline` ≤ today.
-→ "Deadline passed — apply without a referral when ready, or mark `Got Referral` if one came in. Use `/jobs update <Company>` to change status."
+→ "Deadline passed — apply without a referral when ready, or mark `Got Referral` if one came in. Edit the row in `job_tracker.csv` directly to change status."
 
 ---
 

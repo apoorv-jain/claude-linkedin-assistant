@@ -10,6 +10,9 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green.svg"></a>
   <img alt="Claude Code" src="https://img.shields.io/badge/Claude%20Code-Ready-orange">
   <img alt="LinkedIn" src="https://img.shields.io/badge/LinkedIn-via%20Chrome%20MCP-0A66C2?logo=linkedin&logoColor=white">
+  <a href="CONTRIBUTING.md"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg"></a>
+  <img alt="Maintained" src="https://img.shields.io/badge/Maintained-yes-success">
+  <a href="SECURITY.md"><img alt="Security policy" src="https://img.shields.io/badge/Security-policy-blue"></a>
 </p>
 
 <p align="center">
@@ -17,7 +20,8 @@
   <a href="#how-it-works"><strong>How it works</strong></a> ·
   <a href="#what-it-does"><strong>What it does</strong></a> ·
   <a href="#daily-flow"><strong>Daily flow</strong></a> ·
-  <a href="#privacy"><strong>Privacy</strong></a>
+  <a href="#privacy"><strong>Privacy</strong></a> ·
+  <a href="#contributing"><strong>Contributing</strong></a>
 </p>
 
 A Claude Code assistant for LinkedIn. Track jobs in a single CSV, discover new openings via LinkedIn + web search, send connection requests and first DMs at companies you're targeting.

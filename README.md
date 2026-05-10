@@ -28,6 +28,8 @@ A Claude Code assistant for LinkedIn. Track jobs in a single CSV, discover new o
 
 > **Scope on purpose:** Claude only does the safe, repetitive parts. You handle anything that requires judgment (replies, applications, attachments, follow-ups).
 
+Looking for the Codex version with resume tailoring, referral orchestration, application folders, and approval-gated browser workflows? See [codex_linkedin_assistant](https://github.com/FarzamHejaziK/codex_linkedin_assistant).
+
 ## Quick Start
 
 Before anything else, you'll want three things installed:

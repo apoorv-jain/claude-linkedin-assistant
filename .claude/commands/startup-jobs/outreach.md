@@ -359,10 +359,22 @@ Parse the user's approval response. For each approved contact + platform, load t
 
 ### Email
 
-1. Navigate Chrome to `https://mail.google.com/mail/u/0/#compose`.
-2. Fill in: To = `<email>`, Subject = `<chosen subject>`, Body = `<approved draft>`.
-3. **Stop. Do not click Send.** Tell the user: "Email ready for <Name> in Gmail. Click Send when you're ready."
-4. Log in contact file: `Email | Draft Loaded in Gmail | <today>`
+1. Build the Gmail pre-fill URL using query parameters — this opens a compose window with To, Subject, and Body already populated:
+   ```
+   https://mail.google.com/mail/u/0/?view=cm&fs=1&to=<URL-encoded email>&su=<URL-encoded subject>&body=<URL-encoded body>
+   ```
+   URL-encode all three values (spaces → `%20`, newlines → `%0A`, `@` → `%40`, etc.).
+
+2. Navigate Chrome to that URL. Gmail will open a compose window with all fields pre-filled.
+
+3. **Stop. Do not click Send.**
+
+4. Send a desktop push notification:
+   > `PushNotification: "Gmail draft ready for <Name> (<Company>) — review and click Send"`
+
+5. Tell the user in chat: "Gmail compose is open and pre-filled for <Name>. Check your browser and click Send when ready."
+
+6. Log in contact file: `Email | Draft Loaded in Gmail | <today>`
 
 ### Twitter/X DM
 
@@ -377,7 +389,10 @@ Parse the user's approval response. For each approved contact + platform, load t
 
 ## Step 7 — Confirm what was sent
 
-After all compose windows are loaded, pause and ask the user:
+After all compose windows are loaded, send a summary push notification:
+> `PushNotification: "All <N> outreach drafts loaded for <Company> — go send them, then come back to confirm"`
+
+Then pause and ask the user:
 
 > All drafts are loaded in their compose windows. Go ahead and click Send in each tab.
 >

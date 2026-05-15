@@ -149,6 +149,21 @@ Apply platform guardrails from `_shared.md` before drafting. Note any guardrail 
 
 ## Step 4 — Template selection
 
+**First: check for saved templates.** Before showing any options, look for `resumes/outreach_templates.md`.
+
+- **File does not exist** → prompt immediately:
+  > "No outreach templates saved yet. Would you like to create a custom template for this outreach, or use the built-in defaults?
+  >
+  >   `create` — I'll guide you through writing one (takes ~1 min)
+  >   `built-in` — use the auto-matched defaults and continue"
+
+  - `create` → jump to the template creation flow (option `3` below), then return here.
+  - `built-in` → proceed with built-in templates. Skip the rest of Step 4 setup.
+
+- **File exists** → read it, note how many templates are saved, and continue to the selection prompt below.
+
+---
+
 Before drafting anything, show the user the template plan and ask them to choose.
 
 Print a table of contacts and their auto-assigned template:

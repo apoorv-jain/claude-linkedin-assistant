@@ -365,7 +365,7 @@ Parse the user's approval response. For each approved contact + platform, load t
    ```
    URL-encode all three values (spaces → `%20`, newlines → `%0A`, `@` → `%40`, etc.).
 
-2. Navigate Chrome to that URL. Gmail will open a compose window with all fields pre-filled.
+2. Create a new Chrome tab with `mcp__Claude_in_Chrome__tabs_create_mcp`. Navigate that new tab to the Gmail pre-fill URL. Do not reuse the current working tab.
 
 3. **Stop. Do not click Send.**
 

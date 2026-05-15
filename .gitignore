@@ -9,6 +9,10 @@ resumes/*
 outreach/*.md
 !outreach/.gitkeep
 
+# Startup outreach contact DB — local only, contains emails + handles
+startup_outreach/*.md
+!startup_outreach/.gitkeep
+
 # Application folders — local only if you create them
 applications/
 

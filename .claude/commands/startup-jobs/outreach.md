@@ -147,9 +147,69 @@ Apply platform guardrails from `_shared.md` before drafting. Note any guardrail 
 
 ---
 
-## Step 4 — Draft messages for each contact + platform
+## Step 4 — Template selection
 
-For each contact in the file, draft one message per platform where that contact has a confirmed or inferred channel.
+Before drafting anything, show the user the template plan and ask them to choose.
+
+Print a table of contacts and their auto-assigned template:
+
+```
+Template plan for <Company>:
+
+  Contact              | Type       | Template
+  ---------------------|------------|---------------------------
+  Jane Smith           | Recruiter  | Built-in Recruiter
+  Bob Lee              | HM         | Built-in HM/EM
+  Alice Chen           | CEO        | Built-in CEO (<100 emp)
+```
+
+Then ask:
+
+> Which template approach would you like?
+>
+>   `1` — Use built-in templates as shown above (auto-matched by contact type)
+>   `2` — Use a saved custom template from `resumes/outreach_templates.md`
+>   `3` — Write a new template now (I'll help you draft it and offer to save it)
+>   `4` — Different template per contact (I'll ask for each one)
+>
+> Press Enter to use built-in defaults.
+
+**If `1` or Enter:** proceed with built-in templates. Skip to Step 4A.
+
+**If `2`:** check `resumes/outreach_templates.md`. If it exists, read it and show available templates by name. Ask which one to apply. If the file doesn't exist, tell the user:
+> "No saved templates found. Want to create one now? (y/n)"
+> - `y` → run option `3` flow below.
+> - `n` → fall back to built-in templates.
+
+**If `3`:** run the template creation flow:
+1. Ask: "What do you want to highlight — your specialization, why you're interested in <Company>, or a specific team or product? One or two sentences."
+2. Ask: "Any constraints? (e.g., keep under 100 words, casual tone, reference a specific product)"
+3. Draft a custom template using their input + the pitch from Step 3. Show it:
+   ```
+   [ Draft custom template ]
+   LinkedIn DM:
+   Hi <First>, ...
+
+   Email subject: ...
+   Email body:
+   Hi <First>, ...
+
+   Twitter/X:
+   Hi <First>, ...
+   ```
+4. Ask: "Use this for <Company> only, or save it as a reusable template? (just this / save)"
+   - `save` → write to `resumes/outreach_templates.md` (create if needed). Add under a heading matching the contact type or `## Custom — <Company>`.
+   - `just this` → use for this run only.
+
+**If `4`:** after drafting each contact's message in Step 4A, pause and ask:
+> "Template for <Name> (<Title>): use built-in, custom, or write new? (1/2/3)"
+Process per-contact before moving to the next.
+
+---
+
+## Step 4A — Draft messages for each contact + platform
+
+For each contact in the file, draft one message per platform where that contact has a confirmed or inferred channel. Use the template selected in Step 4.
 
 **If cold outreach mode** (Step 2B): use the "Cold outreach — No open role" templates from `_shared.md` (or the custom template from Step 2C). Skip the Recruiter / HM / CEO role-specific templates below — those require an open role to reference.
 

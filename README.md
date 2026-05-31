@@ -17,6 +17,7 @@
 
 <p align="center">
   <a href="#quick-start"><strong>Quick Start</strong></a> ·
+  <a href="#already-have-the-repo"><strong>Update</strong></a> ·
   <a href="#how-it-works"><strong>How it works</strong></a> ·
   <a href="#what-it-does"><strong>What it does</strong></a> ·
   <a href="#daily-flow"><strong>Daily flow</strong></a> ·
@@ -99,6 +100,39 @@ To change a job's status (Applied, Phone Screen, Onsite, Rejected), edit `job_tr
 If you just want to see it run, do `/jobs daily` — it walks you through one full day end to end.
 
 For more detail on any of these, see [What it does](#what-it-does), [Daily flow](#daily-flow), or [REQUIREMENTS.md](REQUIREMENTS.md).
+
+## Already Have The Repo?
+
+If you cloned this repo before Indeed support was added, update your local copy first:
+
+```bash
+cd claude-linkedin-assistant
+git status
+git pull --ff-only origin main
+```
+
+If Git says local changes would be overwritten, commit or stash your local work first, then pull again.
+
+After pulling:
+
+1. Reopen the folder in Claude Code, or reload the existing window so the new `/jobs setup` and `/jobs indeed-setup` commands are picked up.
+2. Keep LinkedIn signed in as usual.
+3. If you want Indeed discovery, sign into [indeed.com](https://www.indeed.com/) in the same Chrome browser used by the Claude in Chrome extension.
+4. Run `/jobs setup` to configure platforms, or run `/jobs indeed-setup` if you only want to enable/retry Indeed.
+
+Existing `resumes/search_profile.md` files are preserved. Setup only adds or updates the local platform sections:
+
+```markdown
+## Platforms
+- LinkedIn: yes
+- Indeed: yes
+
+## Indeed
+- Discovery: enabled
+- Profile optimization: skipped
+```
+
+Choose `no` or `later` if you do not want Indeed. `/jobs find` will keep using LinkedIn + WebSearch only. Choose `yes` to add Indeed discovery. Indeed profile optimization is separate, optional, and every public-facing profile edit is shown before saving.
 
 ## How it works
 

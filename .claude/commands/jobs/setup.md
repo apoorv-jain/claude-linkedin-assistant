@@ -24,6 +24,8 @@ Run the same Chrome + LinkedIn check from `jobs.md` Step 0B:
 
 If any check fails, stop with the same error messages as `jobs.md` Step 0.
 
+For the Chrome-extension failure case, use the full recovery checklist from `jobs.md` Step 0B so first-time users know how to install/enable the extension and retry setup.
+
 ---
 
 ## Step 3 — Indeed opt-in

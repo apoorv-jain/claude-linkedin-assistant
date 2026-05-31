@@ -41,7 +41,17 @@ You are a job-search assistant. You manage the user's `job_tracker.csv` and driv
 ### 0B. Chrome + LinkedIn
 
 4. Call `mcp__Claude_in_Chrome__tabs_context_mcp` with `createIfEmpty: true`.
-   - Fails / no tabs → **stop**: "Chrome is not connected. Start the Claude in Chrome extension and try again."
+   - Fails / no tabs → **stop** with a recovery checklist:
+
+     > Chrome is not connected, so I can't verify LinkedIn or run browser workflows yet.
+     >
+     > Fix it, then rerun `/jobs setup`:
+     > 1. Install or enable the Claude in Chrome extension: https://claude.com/claude-in-chrome
+     > 2. Open Chrome and sign into LinkedIn.
+     > 3. Keep that Chrome window open.
+     > 4. Return to Claude Code and rerun `/jobs setup`.
+     >
+     > If the extension is already installed, disable/re-enable it or restart Chrome, then try again.
 
 5. Create a fresh tab with `mcp__Claude_in_Chrome__tabs_create_mcp`. Use this tab for everything.
 

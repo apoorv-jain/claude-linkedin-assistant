@@ -44,6 +44,27 @@ Examples of what to put in there:
 - "Founding engineer" titles at <$150K
 ```
 
+### Platform configuration
+
+`/jobs setup` writes a `## Platforms` section to `search_profile.md` to record which job boards are enabled:
+
+```markdown
+## Platforms
+- LinkedIn: yes
+- Indeed: yes
+
+## Indeed
+- Discovery: enabled
+- Profile optimization: skipped
+```
+
+- `LinkedIn: yes` is always set (LinkedIn is mandatory).
+- `Indeed: yes` + `Discovery: enabled` means `/jobs find` includes Indeed search and recommendation lanes.
+- `Indeed: no` or missing means Indeed is skipped entirely.
+- `Profile optimization` values: `completed` / `skipped` / `later` / `blocked`.
+
+You don't need to write this by hand — `/jobs setup` handles it.
+
 Format is loose — bullets, paragraphs, whatever. The LLM reads it as plain text. If the file doesn't exist, the search profile is inferred entirely from your resume (titles + skills + location).
 
 ## What's NOT in this folder

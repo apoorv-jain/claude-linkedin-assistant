@@ -24,7 +24,7 @@
   <a href="#contributing"><strong>Contributing</strong></a>
 </p>
 
-A Claude Code assistant for LinkedIn. Track jobs in a single CSV, discover new openings via LinkedIn + web search, send connection requests and first DMs at companies you're targeting.
+A Claude Code assistant for LinkedIn. Track jobs in a single CSV, discover new openings via LinkedIn + web search + optional Indeed, send connection requests and first DMs at companies you're targeting.
 
 > **Scope on purpose:** Claude only does the safe, repetitive parts. You handle anything that requires judgment (replies, applications, attachments, follow-ups).
 
@@ -68,7 +68,16 @@ Just put your resume into the `resumes/` folder however you normally move a file
 
 Launch the **Claude Code desktop app**, then **File → Open Folder** and pick the `claude-linkedin-assistant` folder you just cloned. The app loads the workspace and finds all the `/jobs` commands automatically.
 
-### 4. Run `/jobs`
+### 4. Run `/jobs setup`
+
+After opening the folder in Claude Code, run `/jobs setup`. It walks you through:
+
+1. **Resume check** — confirms your resume is readable.
+2. **LinkedIn login** — verifies Chrome extension is connected and the right account is active.
+3. **Indeed (optional)** — asks if you want Indeed as an additional job source. If yes, it checks that you're signed into indeed.com in the same Chrome browser. If no, discovery uses LinkedIn + WebSearch only. You can enable Indeed later with `/jobs indeed-setup`.
+4. **Indeed profile optimization (optional)** — if you enabled Indeed, it offers to optimize your Indeed profile (headline, summary, skills, preferences) from your resume. Every edit is shown before saving. You can skip this and still use Indeed for discovery.
+
+### 5. Run `/jobs`
 
 In the chat, type `/jobs` and hit enter. The first thing it does, every time, is verify that the Chrome extension is connected and the LinkedIn account signed in matches the name on your resume. If something's off, it tells you exactly what to fix instead of guessing.
 
@@ -76,11 +85,13 @@ After that, you've got the menu:
 
 ```
 /jobs                       # show the menu (start here the first time)
+/jobs setup                 # first-run setup / configure platforms
 /jobs daily                 # walk the full daily flow end-to-end
 /jobs find                  # discover new jobs and add them to the tracker
 /jobs check                 # daily dashboard: what's pending, what's stale
 /jobs outreach <Company>    # connection requests + first DMs at <Company>
 /jobs add                   # manually add a job you found somewhere else
+/jobs indeed-setup          # enable Indeed or optimize your Indeed profile
 ```
 
 To change a job's status (Applied, Phone Screen, Onsite, Rejected), edit `job_tracker.csv` directly in Numbers, Excel, or VS Code. There's no separate update command — a one-cell edit is faster than a CLI prompt.
@@ -101,17 +112,19 @@ The flow that does the most work is `/jobs outreach`. For each company you targe
 
 Anything that requires real judgment stays on you: replies once a thread goes warm, follow-up nudges, application forms, attaching a resume to a Gmail thread, deciding what to say when a recruiter asks about your salary expectations. Claude is good at the safe, repetitive parts — sending the same templated first message to twenty new connections, paginating through LinkedIn search results, keeping the CSV in sync, drafting outreach text. It's not good at the high-judgment moments, so by design, it doesn't try to do them.
 
-When you run `/jobs daily`, it strings the four pipeline flows together — find new jobs, check the dashboard, add anything you saw elsewhere, run outreach at HIGH-priority companies that need a referral — with a checkpoint between each step where you can continue, skip, or quit. At the end it makes a single git commit summarizing what happened that day. Run it once and you've done the day's pipeline work in one pass.
+When you run `/jobs daily`, it first runs setup if platform config is missing, then checks the dashboard, finds new jobs, handles any manual adds, and runs outreach at HIGH-priority companies that need a referral. It runs end to end with no between-step prompts and makes a single git commit summarizing what happened that day.
 
 ## What it does
 
 | Feature | Command | Who does what |
 |---|---|---|
 | Verify Chrome + LinkedIn login | (auto on every `/jobs` run) | Claude reads your name from your resume in `resumes/` and verifies the active LinkedIn profile matches |
-| Find new jobs | `/jobs find` | Claude reads your resume(s), searches LinkedIn + the web, scores and adds results to the tracker |
+| First-run setup | `/jobs setup` | Verifies resume, LinkedIn, and optionally enables Indeed |
+| Find new jobs | `/jobs find` | Claude reads your resume(s), searches LinkedIn + the web + optional Indeed, scores and adds results to the tracker |
 | Track jobs | `/jobs check` · `/jobs add` | Claude reads/writes `job_tracker.csv`. Status edits are done by hand in the CSV. |
 | Outreach (cold sweep) | `/jobs outreach <Company>` | Claude sends connection requests to 2nd-degree contacts ("Send without a note") and a first DM to existing 1st-degree connections at that company |
-| Daily run | `/jobs daily` | Walks through find → check → outreach in one pass |
+| Indeed profile | `/jobs indeed-setup` | Enable Indeed discovery or optimize your Indeed profile from your resume |
+| Daily run | `/jobs daily` | Walks through setup (if first run) → check → find → add → outreach in one pass |
 
 ## What it does NOT do (by design)
 
@@ -127,8 +140,9 @@ If you want a more full-featured workflow (resume tailoring, reply handling, app
 `/jobs daily` walks through the recommended sequence end to end:
 
 ```
+0. /jobs setup       — first-run platform setup only, if needed
 1. /jobs check       — dashboard: what's pending, what's stale
-2. /jobs find        — discover new jobs via LinkedIn + web search
+2. /jobs find        — discover new jobs via LinkedIn + web search + optional Indeed
 3. /jobs add         — capture interesting finds (auto-flags companies that need a referral)
 4. /jobs outreach    — send first DMs to 1st-degree connections at companies that need outreach
 5. commit            — single git commit at the end
@@ -158,11 +172,13 @@ claude-linkedin-assistant/
         ├── jobs.md               ← top-level /jobs command
         └── jobs/
             ├── _shared.md        ← rules loaded by every sub-flow
-            ├── find.md           ← discover jobs
+            ├── setup.md          ← first-run platform configuration
+            ├── find.md           ← discover jobs (LinkedIn + WebSearch + optional Indeed)
             ├── check.md          ← daily dashboard
             ├── add.md            ← add a job to the tracker
             ├── outreach.md       ← first-message DM flow
-            └── daily.md          ← orchestrator
+            ├── daily.md          ← orchestrator
+            └── indeed-setup.md   ← enable Indeed / optimize Indeed profile
 ```
 
 ## Tracker format

@@ -48,9 +48,61 @@ Build 3-5 queries combining target titles, top keywords, and locations inferred 
 - `"<target title>" "<keyword>" "<keyword>" Remote jobs 2026`
 - `"<adjacent title>" "<keyword>" "<location>" 2026`
 
-Combine all results into one pool.
+Combine LinkedIn + WebSearch results into one pool.
 
 **Rate limiting:** If LinkedIn throttles or shows a CAPTCHA mid-search, stop and tell the user. Work with results collected so far, or re-run later in smaller batches.
+
+---
+
+## Step 2B — Indeed (only if enabled)
+
+Check `resumes/search_profile.md` for `Indeed: yes` (in the Platforms section) or `Discovery: enabled` (in the Indeed section). If neither is present, **skip this entire step** — Indeed is off.
+
+### Indeed Lane A — active search
+
+For each target role, for each location from the search plan:
+
+```
+https://www.indeed.com/jobs?q=<role>&l=<location>&fromage=7&sort=date
+```
+
+Also run each with `&l=Remote` (drop `radius`). `fromage=7` = posted in the last 7 days, `sort=date` = newest first. Paginate with `&start=10`, `&start=20` (up to 2 pages per search). Read each results page with `mcp__Claude_in_Chrome__get_page_text`. Extract Company, Role, Location, Salary (if shown), and the job URL (`/viewjob?jk=...` or `/jobs/view/...`).
+
+**Hybrid coverage:** the local-area pass already returns hybrid roles because they are posted under the office city. Do not drop a candidate for being "Hybrid" — if the user's search profile allows Hybrid or On-site for that area, it is in-scope.
+
+### Indeed Lane B — recommendation harvest (best-effort)
+
+After active search, glance at logged-in Indeed for any personalized module:
+
+- `https://www.indeed.com/`
+- Any visible "Jobs for you", "Because of your profile", "Profile match", "Based on your qualifications" module.
+
+Extract Company, Role, Location, Salary (if shown), URL, the match label, and tag source as `Indeed Recommendation`. Do not click apply. **Expect little or nothing here** — Indeed is sunsetting the desktop Recommended Jobs feature, so this lane is a bonus, not a dependency. If it is empty, move on.
+
+### Indeed Lane C — Career Scout ingestion (mobile, user-fed)
+
+Career Scout is Indeed's personalized recommender and it is **mobile-app only (iOS/Android)** — it cannot be driven from Chrome. Handle it as a user-in-the-loop source:
+
+- Prompt the user near the start of `/jobs find`: "Career Scout is mobile-only. If you've run it recently, paste any roles it surfaced (links, or company + title) and I'll fold them in." If they have nothing, skip and continue (fail-soft, never block).
+- When the user pastes Career Scout roles: tag each `Career Scout`. Resolve a working URL if they give only a name (via WebSearch). Run them through the same pipeline as every other source: dedup → company-site verification → score → add.
+- Career Scout picks count as a personalized recommendation for scoring (+1 bonus), but still must pass the minimum score.
+
+### Indeed pacing + fail-soft (REQUIRED)
+
+Indeed runs Cloudflare + DataDome, stricter than LinkedIn:
+
+- Go slow: one Indeed URL at a time, never fire all titles/pages in a burst.
+- **On ANY block** (CAPTCHA / "verify you are human" / 403 / blank page): STOP the current Indeed lane, do NOT try to solve it, log `Indeed: blocked after N results`, and continue the pipeline with LinkedIn + WebSearch + any already-collected Indeed results.
+- Indeed randomizes its HTML — extraction is flakier than LinkedIn. If a result's Company/Role is garbled or empty, drop it, do not guess.
+- **Fallback when Indeed is blocked or thin** — backfill via WebSearch for the same titles:
+  - `<title> jobs "<location>" site:indeed.com 2026`
+  - `<title> <top keyword> <top keyword> jobs 2026`
+
+Indeed is fail-soft: a blocked Indeed lane must NEVER stop LinkedIn results or the scoring/add steps from completing.
+
+---
+
+Combine all results (LinkedIn + WebSearch + Indeed Search + Indeed Recommendation + Career Scout) into one pool. Keep source tags through scoring and tracker notes.
 
 ---
 
@@ -58,7 +110,7 @@ Combine all results into one pool.
 
 **Dedup:** Remove any result where Company + similar Role already exists in `job_tracker.csv`. Track skipped names to report at the end.
 
-**Score each job (0-10) against the search plan from Step 1:**
+**Score each job (0-12) against the search plan from Step 1:**
 
 - Title matches a target role exactly: +3
 - Title is adjacent (e.g. "Staff" instead of "Senior", or "Analyst" vs "Scientist" with overlapping skills): +1.5
@@ -67,8 +119,25 @@ Combine all results into one pool.
 - Posted ≤7 days ago: +1
 - Salary at or above the profile's stated floor (skip this rule if no floor was given): +1
 - **Search profile match for company stage / size / domain** (e.g. profile says "climate tech", job is at a climate-tech company): +1
+- Indeed personalized recommendation / profile-match label / Career Scout source: +1
+- Matching company-site posting verified (Indeed candidate confirmed live on company careers page): +1
 
 **Hard exclusions from the search profile** (deal-breakers like "no crypto", "no consulting"): drop the job entirely BEFORE scoring. Don't surface it in the results table.
+
+**Company-site verification for Indeed candidates:**
+
+For every Indeed candidate that survives the dedup:
+- Search WebSearch for the same Company + Role on the company careers page.
+- If a matching live company posting exists, replace the URL with the company apply URL and add `Verified company site from Indeed discovery` to Notes.
+- If no direct posting is found but the Indeed posting is live and credible, keep the Indeed URL and add `Indeed-only posting; verify before apply` to Notes. Set `Apply Via=Indeed`.
+- If the company site shows the role closed/missing and the Indeed post looks stale, drop it.
+
+**Indeed recommendation rules:**
+- Treat recommendations as signal, not truth. Indeed can recommend noisy, stale, sponsored, or off-target jobs.
+- The +1 scoring bonus helps but never rescues a weak or off-target JD.
+
+**Source tags to preserve in tracker Notes:**
+- `Indeed Search` / `Indeed Recommendation` / `Career Scout` / `Verified company site` / `Indeed-only posting; verify before apply`
 
 Drop jobs where total score < 4. Sort descending. Take top 20.
 

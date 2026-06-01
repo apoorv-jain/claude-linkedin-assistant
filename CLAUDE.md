@@ -4,9 +4,20 @@ Project rules loaded automatically when Claude works in this folder.
 
 ## What this is
 
-A minimal job-search workspace that pairs `job_tracker.csv` with four Claude-driven flows: find, check, add, and send a first outreach DM to existing 1st-degree LinkedIn connections (status edits are done by hand directly in the CSV).
+A minimal job-search workspace that pairs `job_tracker.csv` with a Claude-driven daily orchestrator. The intended user path is simple: run `/jobs setup` once to configure the workspace, then run `/jobs daily` to check the tracker, find jobs, add strong matches, run referral outreach, and commit the day's work. Status edits are done by hand directly in the CSV.
 
 See `README.md` for the user-facing overview and `REQUIREMENTS.md` for setup. The authoritative command flows live in `.claude/commands/jobs/`.
+
+## Primary workflow
+
+Default to the simple path unless the user asks for a specific sub-command:
+
+1. `/jobs setup` — first-run setup and platform configuration.
+2. `/jobs daily` — main orchestrator for day-to-day use.
+
+`/jobs daily` is the recommended entry point after setup because it reduces user burden. It decides what to run next, skips empty steps, runs discovery, adds qualified jobs, runs outreach when needed, and commits once at the end.
+
+Use individual flows (`check`, `find`, `add`, `outreach`, `indeed-setup`) for ad-hoc requests or when the user explicitly asks for that narrower action.
 
 ## Where the docs live (read before acting)
 
@@ -81,6 +92,8 @@ When `Referral Needed=YES`:
 ## Unified command
 
 Use `/jobs` for all tracker operations. Sub-flows: `setup` · `daily` · `check` · `find` · `add` · `outreach` · `indeed-setup`
+
+Recommended path: `/jobs setup` once, then `/jobs daily` for normal use. Treat `/jobs daily` as the orchestrator, not just another sub-command.
 
 ## Tone
 

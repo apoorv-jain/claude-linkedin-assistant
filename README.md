@@ -78,16 +78,18 @@ After opening the folder in Claude Code, run `/jobs setup`. It walks you through
 3. **Indeed (optional)** — asks if you want Indeed as an additional job source. If yes, it checks that you're signed into indeed.com in the same Chrome browser. If no, discovery uses LinkedIn + WebSearch only. You can enable Indeed later with `/jobs indeed-setup`.
 4. **Indeed profile optimization (optional)** — if you enabled Indeed, it offers to optimize your Indeed profile (headline, summary, skills, preferences) from your resume. Every edit is shown before saving. You can skip this and still use Indeed for discovery.
 
-### 5. Run `/jobs`
+### 5. Run `/jobs daily`
 
-In the chat, type `/jobs` and hit enter. The first thing it does, every time, is verify that the Chrome extension is connected and the LinkedIn account signed in matches the name on your resume. If something's off, it tells you exactly what to fix instead of guessing.
+After setup, the easiest way to use the assistant is `/jobs daily`. Think of it as the orchestrator: it checks the tracker, finds new jobs, adds strong matches, runs referral outreach when needed, and commits the day's work.
 
-After that, you've got the menu:
+In the chat, type `/jobs daily` and hit enter. The first thing it does, every time, is verify that the Chrome extension is connected and the LinkedIn account signed in matches the name on your resume. If something's off, it tells you exactly what to fix instead of guessing.
+
+You can also type `/jobs` to show the menu:
 
 ```
 /jobs                       # show the menu (start here the first time)
 /jobs setup                 # first-run setup / configure platforms
-/jobs daily                 # walk the full daily flow end-to-end
+/jobs daily                 # recommended orchestrator: check → find → add → outreach → commit
 /jobs find                  # discover new jobs and add them to the tracker
 /jobs check                 # daily dashboard: what's pending, what's stale
 /jobs outreach <Company>    # connection requests + first DMs at <Company>
@@ -97,7 +99,7 @@ After that, you've got the menu:
 
 To change a job's status (Applied, Phone Screen, Onsite, Rejected), edit `job_tracker.csv` directly in Numbers, Excel, or VS Code. There's no separate update command — a one-cell edit is faster than a CLI prompt.
 
-If you just want to see it run, do `/jobs daily` — it walks you through one full day end to end.
+Most users can live in two commands: run `/jobs setup` once, then run `/jobs daily` whenever they want the assistant to handle the job-search pipeline.
 
 For more detail on any of these, see [What it does](#what-it-does), [Daily flow](#daily-flow), or [REQUIREMENTS.md](REQUIREMENTS.md).
 
@@ -146,6 +148,8 @@ The flow that does the most work is `/jobs outreach`. For each company you targe
 
 Anything that requires real judgment stays on you: replies once a thread goes warm, follow-up nudges, application forms, attaching a resume to a Gmail thread, deciding what to say when a recruiter asks about your salary expectations. Claude is good at the safe, repetitive parts — sending the same templated first message to twenty new connections, paginating through LinkedIn search results, keeping the CSV in sync, drafting outreach text. It's not good at the high-judgment moments, so by design, it doesn't try to do them.
 
+The main workflow is intentionally simple: `/jobs setup` once, then `/jobs daily` after that. Setup handles the one-time platform choices. Daily is the orchestrator that pulls the whole system together so the user does not have to remember which sub-command to run next.
+
 When you run `/jobs daily`, it first runs setup if platform config is missing, then checks the dashboard, finds new jobs, handles any manual adds, and runs outreach at HIGH-priority companies that need a referral. It runs end to end with no between-step prompts and makes a single git commit summarizing what happened that day.
 
 ## What it does
@@ -158,7 +162,7 @@ When you run `/jobs daily`, it first runs setup if platform config is missing, t
 | Track jobs | `/jobs check` · `/jobs add` | Claude reads/writes `job_tracker.csv`. Status edits are done by hand in the CSV. |
 | Outreach (cold sweep) | `/jobs outreach <Company>` | Claude sends connection requests to 2nd-degree contacts ("Send without a note") and a first DM to existing 1st-degree connections at that company |
 | Indeed profile | `/jobs indeed-setup` | Enable Indeed discovery or optimize your Indeed profile from your resume |
-| Daily run | `/jobs daily` | Walks through setup (if first run) → check → find → add → outreach in one pass |
+| Daily orchestrator | `/jobs daily` | Recommended main workflow: setup if needed → check → find → add → outreach → commit |
 
 ## What it does NOT do (by design)
 
@@ -171,7 +175,9 @@ If you want a more full-featured workflow (resume tailoring, reply handling, app
 
 ## Daily flow
 
-`/jobs daily` walks through the recommended sequence end to end:
+`/jobs daily` is the recommended way to use the assistant day to day. It is the orchestrator for the full workflow, so users do not need to manually remember whether to check, find, add, or run outreach next.
+
+It walks through this sequence end to end:
 
 ```
 0. /jobs setup       — first-run platform setup only, if needed

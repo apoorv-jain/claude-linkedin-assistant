@@ -1,8 +1,8 @@
 # DAILY (orchestrator)
 
-`/jobs daily` runs the daily sequence end to end. Each step has a checkpoint: the user can run, skip, or stop. Empty steps are auto-skipped.
+`/jobs daily` is the main orchestrator. It runs the daily sequence end to end with no between-step prompts. Empty steps are auto-skipped.
 
-For ad-hoc work, run individual `/jobs <sub-command>` directly.
+For ad-hoc work, run individual `/jobs <sub-command>` directly. For normal use after `/jobs setup`, prefer `/jobs daily`.
 
 ---
 

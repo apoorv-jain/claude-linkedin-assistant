@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.png" width="600" alt="Claude LinkedIn Assistant" />
+  <img src="assets/logo.png" width="600" alt="Claude LinkedIn and Indeed Assistant" />
 </p>
 
 <p align="center">

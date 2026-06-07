@@ -116,6 +116,36 @@ One file per company. Created during `/startup-jobs research`. Updated by `/star
 
 ---
 
+## Search profile — MANDATORY, read on every flow
+
+`resumes/search_profile.md` is the source of truth for what the user wants. **Always read it at the start of every startup-jobs flow, without exception.** It overrides all resume-inferred defaults.
+
+Apply these rules derived from the profile:
+
+**Company type preference (in order):**
+1. B2C at scale — consumer product with millions of users
+2. Large established B2B — serious engineering scale (Postman, BrowserStack, Freshworks, etc.)
+3. Small B2B SaaS — only if Series B+ and deep engineering problems evident
+
+**Hard drops (drop before any scoring):**
+- Consulting / IT services firms (Nagarro, Nearform, Cognizant, Infosys, Wipro, TCS, Accenture, Capgemini, HCL, etc.)
+- Crypto / Web3 companies
+- Pre-Series A or bootstrapped companies
+- Roles with a hard 7+ year experience requirement
+- Salary explicitly listed below 35 LPA (India) or $80K USD
+
+**Scoring boosts to apply:**
+- B2C at scale company → +1
+- Deep engineering signal in JD (performance, architecture, platform, infrastructure) → +1
+- Large established B2B → +0.5
+- Salary at/above 35 LPA / $80K → +1
+
+**Pitch sentence for all outreach** (build from resume each time, don't hardcode):
+> "Tushar is a Senior Software Engineer at Procol with 4+ years in React/Next.js/TypeScript, frontend architecture, and performance optimization."
+Adapt emphasis per company type: performance for B2C scale, systems/architecture for infra-adjacent, tooling for devtools.
+
+---
+
 ## General rules (same as jobs.md)
 
 - Render all tracker data as markdown tables, never raw CSV.
@@ -152,50 +182,62 @@ User updates `Replied`, `Declined`, `Converted` manually. Claude sets the rest a
 
 Load these templates in `outreach.md`. Fill `<placeholders>` from resume and contacts file.
 
+**Build the pitch first** (always from `resumes/Tushar_Garg_Resume_Updated.pdf`):
+- Name: Tushar
+- Current role: Senior Software Engineer at Procol
+- Experience: 4+ years
+- Specializations: React/Next.js/TypeScript, frontend architecture, performance optimization
+- Adapt emphasis per company: performance for B2C scale, architecture for platform roles, tooling for devtools
+
+Pitch sentence shape:
+> "Tushar is a Senior Software Engineer at Procol with 4+ years in React/Next.js/TypeScript, frontend architecture, and performance optimization."
+
+Scan every draft for `—` before showing. Rewrite if found.
+
 ### Initial outreach — Recruiter
 
 **Subject options** (show two, let user pick):
-- `<Role> at <Company> — <user first name>`
-- `Interested in <Role> — <user current title>`
+- `<Role> at <Company> — Tushar`
+- `Senior Frontend Engineer interested in <Company>`
 
 **Body:**
 > Hi <First>,
 >
-> <Third-person pitch>. I came across the <Role> opening at <Company> and it aligns closely with the work I've been doing in <top specialization>.
+> Tushar is a Senior Software Engineer at Procol with 4+ years in React/Next.js/TypeScript, frontend architecture, and performance optimization. I came across the <Role> opening at <Company> and it aligns closely with what I have been building.
 >
-> I'd love to connect briefly or learn more about the team if you're open to it.
+> Would you be open to a quick chat or sharing more about the team?
 >
 > Thanks,
-> <user first name>
-> <LinkedIn URL>
+> Tushar
+> linkedin.com/in/tushar-garg-65663b190
 
 ### Initial outreach — Engineering Manager / Hiring Manager
 
 **Subject options:**
-- `<Role> at <Company> — <user first name>`
-- `<user current title> interested in <Role>`
+- `<Role> at <Company> — Tushar`
+- `Senior SWE interested in <Role> at <Company>`
 
 **Body:**
 > Hi <First>,
 >
-> <Third-person pitch>. I noticed the <Role> role at <Company> and it aligns well with what I've been building.
+> Tushar is a Senior Software Engineer at Procol with 4+ years in React/Next.js/TypeScript, frontend architecture, and performance optimization. I noticed the <Role> role at <Company> and it aligns well with what I have been building.
 >
 > Would you be open to a quick chat or a referral if it feels right?
 >
 > Thanks,
-> <user first name>
-> <LinkedIn URL>
+> Tushar
+> linkedin.com/in/tushar-garg-65663b190
 
 ### Initial outreach — CEO (< 100 employees only)
 
 **Subject options:**
-- `<Role> at <Company> — <user first name>`
-- `Excited about <Company> — <user first name>`
+- `<Role> at <Company> — Tushar`
+- `Excited about <Company> — Tushar`
 
 **Body:**
 > Hi <First>,
 >
-> <Third-person pitch>. I've been following <Company>'s work on <one-sentence company description from research> and I saw you're hiring for <Role>.
+> Tushar is a Senior Software Engineer at Procol with 4+ years in React/Next.js/TypeScript, frontend architecture, and performance optimization. I have been following <Company>'s work on <one-sentence company description from research> and I saw you're hiring for <Role>.
 >
 > Would love to explore if there's a fit, even briefly.
 >

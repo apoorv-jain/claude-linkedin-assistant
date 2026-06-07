@@ -118,41 +118,47 @@ Close the dialog if skipping.
 
 ### C. Draft and send the first DM
 
-**Step 1: Build the pitch from the user's resume.** Read whatever is in `resumes/`. Extract:
-- The user's **first name** (top of the resume)
-- The user's **current title** + **employer** (most recent role)
-- **Years of experience** (from the experience timeline)
-- **Top 2-3 specializations** (from the headline / summary / repeated keywords)
+**Step 1: Build the pitch from the user's resume.** Read `resumes/Tushar_Garg_Resume_Updated.pdf`. Extract:
+- **First name:** Tushar
+- **Current title + employer:** Senior Software Engineer at Procol
+- **Years of experience:** ~4.5 years (Feb 2023 to present as SSE, plus earlier experience)
+- **Top specializations:** frontend architecture, React/Next.js/TypeScript, performance optimization at scale
 
-Construct a single third-person sentence about the user. Examples of the right shape:
-> "She is a senior data scientist with 5+ years in experimentation and product analytics, currently at <Employer>."
-> "He is a staff ML engineer with 8+ years building production LLM systems, currently at <Employer>."
+Construct a single third-person sentence. Keep it tight — one sentence max. Example shape:
+> "Tushar is a Senior Software Engineer at Procol with 4+ years in React/Next.js/TypeScript, frontend architecture, and performance optimization."
 
-The pronoun: infer from the name if obvious, otherwise default to omitting the pronoun and starting with the title ("A senior data scientist with..."). Don't invent details not in the resume.
+Adapt the emphasis based on the company: performance-heavy for B2C scale companies, architecture/systems for infra-adjacent roles, AI/tooling for developer tool companies. Never invent details not in the resume.
 
 **Message style rules (strictly enforced):**
 - Short: 2-3 sentences max
 - Conversational, not corporate
-- No em-dashes (—) anywhere
-- No filler phrases like "I hope you're doing well"
-- No "Best, <name>" sign-off — end naturally
+- No em-dashes (—) anywhere — scan every draft before showing
+- No filler phrases ("I hope you're doing well", "reaching out to connect")
+- No "Best, <name>" sign-off — end with just "Thanks, Tushar"
 - Background sentence is third person; greeting and sign-off are first person
 
 **Draft template (adapt by contact's title):**
 
 *If the contact is a recruiter:*
 
-> Hi <First>, <third-person pitch built from the resume>. I saw the <Role> role at <Company> and it looks like a great fit. Would you be open to a referral or sharing more about the team?
+> Hi <First>, Tushar is a Senior Software Engineer at Procol with 4+ years in React/Next.js/TypeScript and frontend architecture. I came across the <Role> opening at <Company> and it looks like a strong fit. Would you be open to a quick chat or sharing more about the team?
 >
 > Thanks,
-> <user's first name>
+> Tushar
 
-*If the contact is a peer (DS / engineer / similar):*
+*If the contact is a peer (engineer / frontend / fullstack):*
 
-> Hi <First>, <third-person pitch built from the resume>. I saw the <Role> opening at <Company> and it looks like a great fit. Would you be open to a referral if it feels right? Would really appreciate it.
+> Hi <First>, Tushar is a Senior Software Engineer at Procol with 4+ years in React/Next.js/TypeScript and frontend architecture. I saw the <Role> opening at <Company> and it looks like a great fit. Would you be open to a referral if it feels right?
 >
 > Thanks,
-> <user's first name>
+> Tushar
+
+*If the contact is an engineering manager or lead:*
+
+> Hi <First>, Tushar is a Senior Software Engineer at Procol with 4+ years in React/Next.js/TypeScript, frontend architecture, and performance optimization. I noticed the <Role> role at <Company> and it aligns well with what I have been building. Would love to connect briefly if you're open to it.
+>
+> Thanks,
+> Tushar
 
 **Send directly, no confirmation.** Find the Message button → click → fill the message field with the draft → click Send. Then move on to the next contact in the loop.
 

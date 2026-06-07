@@ -12,13 +12,33 @@ The agent's job is to **find the listing from minimal input** — not to interro
 
 If the search returns nothing usable for the Company+Role combo (no live listing, only old/closed posts), tell the user clearly: "Couldn't find a live listing for `<Role>` at `<Company>`. Paste the job URL and I'll add it." Wait for the URL, then continue.
 
+## Step 1B — Deal-breaker check (run before adding)
+
+Before filling any row, verify the company is not a deal-breaker. Use WebSearch if needed to check funding stage and business model.
+
+**Hard stops — warn the user and do NOT add to tracker:**
+- Consulting / IT services firm (Nagarro, Cognizant, Infosys, Wipro, TCS, Accenture, Capgemini, HCL, etc.)
+- Crypto / Web3 company
+- Pre-Series A or bootstrapped startup
+- Role explicitly requires 7+ years of experience
+
+If it's a deal-breaker, tell the user:
+> "Skipping `<Company>` — it matches a deal-breaker from your search profile (`<reason>`). If you want to add it anyway, tell me to override."
+
+Wait for explicit override before proceeding.
+
+**Yellow flags — add but note in Notes column:**
+- Small B2B SaaS (Series A, limited scale, no consumer surface) → Notes: `"Small B2B — verify depth of eng problems before applying"`
+- Salary explicitly below 35 LPA → Notes: `"Salary below 35 LPA floor"`
+- Role requires 6-7 years (borderline) → Notes: `"Experience req borderline — worth applying"`
+
 ## Step 2 — Auto-fill the row
 
 From the resolved listing, extract and fill:
 
 - **Company, Role, URL, Location, Type, Salary** — straight from the page.
-- **Priority** — default to `MEDIUM`. Bump to `HIGH` if any of: title is a strong match for the user's most-recent role title from `resumes/`, the company is in the user's `search_profile.md` interests, or the salary is at/above the profile's floor. Drop to `LOW` if the role is borderline-relevant.
-- **Notes** — optional, leave blank unless the user provided something.
+- **Priority** — default to `MEDIUM`. Bump to `HIGH` if: title is a strong match for Senior SWE/Frontend Engineer, company is B2C at scale or large established B2B, or salary is at/above 35 LPA floor. Drop to `LOW` if the role is borderline-relevant or company is small B2B.
+- **Notes** — leave blank unless flagged by Step 1B or user provided something.
 
 Do NOT ask the user for any of these. If a field can't be scraped (e.g. salary not shown), leave it blank.
 

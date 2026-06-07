@@ -18,8 +18,16 @@ These are the live URLs Claude navigates to scrape company lists. Do NOT use sto
 | `blume` | `https://blume.vc/portfolio` | Blume Ventures. |
 | `benchmark` | `https://www.benchmark.com/companies` | Benchmark Capital portfolio. |
 | `greylock` | `https://greylock.com/portfolio/` | Greylock Partners portfolio. |
+| `lightspeed-india` | `https://lsvp.com/portfolio/` | Lightspeed India — backed Oyo, Sharechat, Udaan, Darwinbox. |
+| `kalaari` | `https://www.kalaari.com/portfolio/` | Kalaari Capital — India-focused, backed Cure.fit, Dream11, Myntra. |
+| `chiratae` | `https://www.chiratae.com/portfolio/` | Chiratae Ventures (formerly IDG) — India B2C/B2B2C, backed Lenskart, Firstcry. |
+| `stellaris` | `https://stellarisvp.com/portfolio/` | Stellaris Venture Partners — India-focused early stage. |
+| `dst` | `https://dst.global` | DST Global — backed Swiggy, Meesho, PhonePe. Use WebSearch for portfolio list. |
+| `general-catalyst` | `https://www.generalcatalyst.com/portfolio` | General Catalyst — global, strong India presence (Nykaa, Zeta). |
 
-**Default fund scope** (when `--fund` is not specified): `yc` + `sequoia` + `a16z` + `accel`. Covers the broadest global portfolio without scraping too many pages in one run. Location and job-type filtering happens after scraping using resume data — not at the fund level.
+**Default fund scope** (when `--fund` is not specified): `yc` + `sequoia` + `a16z` + `accel` + `peakxv` + `elevation`. Covers global + India B2C portfolio. Location and job-type filtering happens after scraping using resume data — not at the fund level.
+
+**India-focused default scope** (use `--fund india` shorthand): `peakxv` + `elevation` + `matrix` + `nexus` + `blume` + `kalaari` + `chiratae` + `stellaris`. Best for finding funded Indian B2C startups.
 
 ---
 

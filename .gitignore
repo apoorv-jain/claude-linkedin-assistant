@@ -2,12 +2,17 @@
 .DS_Store
 
 # Personal data — never commit, even on a private fork unless you edit this file
-resumes/*
-!resumes/README.md
+resumes/
+
+# Job tracker data — local only, contains personal application history
+job_tracker.csv
+startup_tracker.csv
 
 # Outreach contact logs — local only, contains names + LinkedIn URLs
-outreach/*.md
-!outreach/.gitkeep
+outreach/
+
+# Startup outreach contact DB — local only, contains emails + handles
+startup_outreach/
 
 # Application folders — local only if you create them
 applications/

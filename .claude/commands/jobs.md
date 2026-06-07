@@ -41,7 +41,17 @@ You are a job-search assistant. You manage the user's `job_tracker.csv` and driv
 ### 0B. Chrome + LinkedIn
 
 4. Call `mcp__Claude_in_Chrome__tabs_context_mcp` with `createIfEmpty: true`.
-   - Fails / no tabs → **stop**: "Chrome is not connected. Start the Claude in Chrome extension and try again."
+   - Fails / no tabs → **stop** with a recovery checklist:
+
+     > Chrome is not connected, so I can't verify LinkedIn or run browser workflows yet.
+     >
+     > Fix it, then rerun `/jobs setup`:
+     > 1. Install or enable the Claude in Chrome extension: https://claude.com/claude-in-chrome
+     > 2. Open Chrome and sign into LinkedIn.
+     > 3. Keep that Chrome window open.
+     > 4. Return to Claude Code and rerun `/jobs setup`.
+     >
+     > If the extension is already installed, disable/re-enable it or restart Chrome, then try again.
 
 5. Create a fresh tab with `mcp__Claude_in_Chrome__tabs_create_mcp`. Use this tab for everything.
 
@@ -55,6 +65,15 @@ You are a job-search assistant. You manage the user's `job_tracker.csv` and driv
 
 ---
 
+## First-run check
+
+Before showing the menu, check `resumes/search_profile.md` for a `## Platforms` section.
+
+- **No search_profile.md, or no `## Platforms` section** → if the user ran `/jobs find` or `/jobs daily`, run `/jobs setup` first. For other commands (`check`, `add`, `outreach`), skip — setup is only needed for discovery.
+- **Platforms section exists** → proceed to the menu.
+
+---
+
 ## Menu (if no argument given)
 
 Ordered to match a daily sequence: warm/urgent items first, discovery in the middle, cold sweep last.
@@ -62,14 +81,18 @@ Ordered to match a daily sequence: warm/urgent items first, discovery in the mid
 ```
 What do you want to do?
 
+SETUP
+  0  setup        — first-run setup / configure platforms
+
 ORCHESTRATOR
-  0  daily        — RUN THE WHOLE DAILY FLOW end-to-end (steps 1, 2, 3, 4 + commit)
+  1  daily        — RUN THE WHOLE DAILY FLOW end-to-end (steps 1, 2, 3, 4 + commit)
 
 PIPELINE
-  1  check        — daily dashboard, surfaces what's pending and what's stale
-  2  find         — discover new jobs via LinkedIn + web search
-  3  add          — add a new job to the tracker (sets Referral Needed YES/NO)
-  4  outreach     — send first DM to existing 1st-degree connections at a company
+  2  check        — daily dashboard, surfaces what's pending and what's stale
+  3  find         — discover new jobs via LinkedIn + web search + optional Indeed
+  4  add          — add a new job to the tracker (sets Referral Needed YES/NO)
+  5  outreach     — send first DM to existing 1st-degree connections at a company
+  6  indeed-setup — enable Indeed or optimize your Indeed profile
 ```
 
 To change a job's status (e.g. mark Applied, Rejected, Onsite), open `job_tracker.csv` directly in Numbers/Excel/VS Code. There's no `/jobs update` flow — status edits are a one-click change in the spreadsheet, and adding a flow for it just adds friction.
@@ -85,10 +108,12 @@ Also **Read** `.claude/commands/jobs/_shared.md` alongside any sub-file — it c
 
 | Flow | File to Read |
 |---|---|
+| setup | `.claude/commands/jobs/setup.md` |
 | daily | `.claude/commands/jobs/daily.md` (orchestrator) |
 | check | `.claude/commands/jobs/check.md` |
 | find | `.claude/commands/jobs/find.md` |
 | add | `.claude/commands/jobs/add.md` |
 | outreach | `.claude/commands/jobs/outreach.md` |
+| indeed-setup | `.claude/commands/jobs/indeed-setup.md` |
 
 Read both `_shared.md` and the selected flow file before taking any action. The sub-files are self-contained and authoritative for their flow.

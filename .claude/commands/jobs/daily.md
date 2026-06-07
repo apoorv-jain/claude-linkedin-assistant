@@ -1,18 +1,19 @@
 # DAILY (orchestrator)
 
-`/jobs daily` runs the daily sequence end to end. Each step has a checkpoint: the user can run, skip, or stop. Empty steps are auto-skipped.
+`/jobs daily` is the main orchestrator. It runs the daily sequence end to end with no between-step prompts. Empty steps are auto-skipped.
 
-For ad-hoc work, run individual `/jobs <sub-command>` directly.
+For ad-hoc work, run individual `/jobs <sub-command>` directly. For normal use after `/jobs setup`, prefer `/jobs daily`.
 
 ---
 
 ## How this command behaves
 
-1. Run STEP 0 (Chrome + LinkedIn check from `jobs.md`) once at the start.
-2. **Pre-flight: read `job_tracker.csv`. If it has 0 data rows (just the header), this is a first-run / empty-tracker state.** Skip Step 1 (check) entirely — there's nothing to dashboard. Jump straight to Step 2 (find). Tell the user: "Tracker is empty, starting with discovery."
-3. Otherwise, walk through the steps below in order, **end to end with no between-step prompts**. Each step runs to completion, then the next one starts automatically. The user is not asked to continue between steps.
-4. Before each step, print a one-line preview of what's queued. If the queue is empty, auto-skip and announce.
-5. At the end, run the commit step automatically and print the daily summary.
+1. **Platform config check:** read `resumes/search_profile.md`. If it has no `## Platforms` section, run `/jobs setup` first (read and execute `.claude/commands/jobs/setup.md`). This only happens once — after setup writes the Platforms section, future daily runs skip this check.
+2. Run STEP 0 (Chrome + LinkedIn check from `jobs.md`) once at the start.
+3. **Pre-flight: read `job_tracker.csv`. If it has 0 data rows (just the header), this is a first-run / empty-tracker state.** Skip Step 1 (check) entirely — there's nothing to dashboard. Jump straight to Step 2 (find). Tell the user: "Tracker is empty, starting with discovery."
+4. Otherwise, walk through the steps below in order, **end to end with no between-step prompts**. Each step runs to completion, then the next one starts automatically. The user is not asked to continue between steps.
+5. Before each step, print a one-line preview of what's queued. If the queue is empty, auto-skip and announce.
+6. At the end, run the commit step automatically and print the daily summary.
 
 If the user invokes a single sub-command from inside the daily flow (e.g. types `/jobs outreach Walmart`), exit the daily orchestrator and let that sub-command run standalone.
 

@@ -22,7 +22,16 @@ The web version at claude.ai/code will NOT work for this repo. The flows need to
 
 The `/jobs` flows drive LinkedIn through Chrome. Install the extension and sign into your LinkedIn account in that browser. <https://claude.com/claude-in-chrome>
 
-## 4. CSV editor (recommended)
+## 4. Indeed account (optional)
+
+If you want Indeed as an additional job source alongside LinkedIn:
+
+- Sign into [indeed.com](https://www.indeed.com/) in the same Chrome browser where the Claude in Chrome extension runs.
+- No API key needed. Claude drives Indeed through Chrome, the same way it drives LinkedIn.
+- Indeed may show CAPTCHAs or block automation. If that happens, Claude skips Indeed and continues with LinkedIn + WebSearch. It never stops a search run because of Indeed.
+- Run `/jobs setup` to enable Indeed, or `/jobs indeed-setup` later.
+
+## 5. CSV editor (recommended)
 
 To view `job_tracker.csv` directly:
 
@@ -32,7 +41,7 @@ To view `job_tracker.csv` directly:
 
 Or just use the `/jobs check` dashboard inside Claude Code.
 
-## 5. GitHub CLI (optional)
+## 6. GitHub CLI (optional)
 
 Only if you want to fork and push your version of this repo:
 

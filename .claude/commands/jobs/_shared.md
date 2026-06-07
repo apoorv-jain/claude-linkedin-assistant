@@ -34,6 +34,16 @@ If it exists:
 
 If it doesn't exist, the search profile is inferred entirely from the resume. Don't tell the user this is missing — the file is optional.
 
+### Platform configuration
+
+`resumes/search_profile.md` may contain a `## Platforms` section and an `## Indeed` section that control which job boards `/jobs find` uses.
+
+- **LinkedIn is mandatory.** Always runs regardless of config.
+- **Indeed is optional and disabled by default.** `/jobs find` skips Indeed unless the search profile explicitly contains `Indeed: yes` in the Platforms section OR `Discovery: enabled` in the Indeed section.
+- If neither is present, Indeed is off — backward compatible with existing users who have no platform config.
+- Platform config is written by `/jobs setup` or `/jobs indeed-setup`. Users can also edit it by hand.
+- Never store login credentials, cookies, tokens, or profile content in repo files.
+
 ---
 
 ## When to use WebSearch
@@ -61,7 +71,7 @@ Use `WebSearch` proactively whenever Chrome returns incomplete info or you need 
 - `Outreach Sent`: a first DM was sent to a 1st-degree connection (either an existing one, or one who recently accepted a connection request).
 - `Declined`: contact replied but said they can't refer.
 - `Referral Deadline`: Discovered Date + 5 days (only when Referral Needed=YES).
-- `Apply Via`: `LinkedIn Easy Apply` / `Company Website` / `Blocked`.
+- `Apply Via`: `LinkedIn Easy Apply` / `Company Website` / `Indeed` / `Blocked`.
 
 ---
 

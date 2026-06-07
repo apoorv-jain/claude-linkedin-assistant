@@ -4,9 +4,20 @@ Project rules loaded automatically when Claude works in this folder.
 
 ## What this is
 
-A minimal job-search workspace that pairs `job_tracker.csv` with four Claude-driven flows: find, check, add, and send a first outreach DM to existing 1st-degree LinkedIn connections (status edits are done by hand directly in the CSV).
+A minimal job-search workspace that pairs `job_tracker.csv` with a Claude-driven daily orchestrator. The intended user path is simple: run `/jobs setup` once to configure the workspace, then run `/jobs daily` to check the tracker, find jobs, add strong matches, run referral outreach, and commit the day's work. Status edits are done by hand directly in the CSV.
 
 See `README.md` for the user-facing overview and `REQUIREMENTS.md` for setup. The authoritative command flows live in `.claude/commands/jobs/`.
+
+## Primary workflow
+
+Default to the simple path unless the user asks for a specific sub-command:
+
+1. `/jobs setup` — first-run setup and platform configuration.
+2. `/jobs daily` — main orchestrator for day-to-day use.
+
+`/jobs daily` is the recommended entry point after setup because it reduces user burden. It decides what to run next, skips empty steps, runs discovery, adds qualified jobs, runs outreach when needed, and commits once at the end.
+
+Use individual flows (`check`, `find`, `add`, `outreach`, `indeed-setup`) for ad-hoc requests or when the user explicitly asks for that narrower action.
 
 ## Where the docs live (read before acting)
 
@@ -16,9 +27,9 @@ See `README.md` for the user-facing overview and `REQUIREMENTS.md` for setup. Th
 | `README.md` | Human-readable workflow overview |
 | `REQUIREMENTS.md` | Setup (Chrome extension, git) |
 | `.claude/commands/jobs/_shared.md` | Shared rules loaded by every `/jobs` sub-flow |
-| `.claude/commands/jobs/{find,check,add,outreach,daily}.md` | Per-flow procedures |
+| `.claude/commands/jobs/{setup,find,check,add,outreach,daily,indeed-setup}.md` | Per-flow procedures |
 | `resumes/` | User's resume(s). Source of truth for name, target roles, skills, pitch |
-| `resumes/search_profile.md` | (Optional) free-form preferences: must-haves, deal-breakers, interest areas, salary floor, locations. Overrides resume-inferred defaults during `/jobs find`. |
+| `resumes/search_profile.md` | (Optional) free-form preferences + platform config (LinkedIn/Indeed opt-in). Overrides resume-inferred defaults during `/jobs find`. |
 
 ## User resume — the source of truth
 
@@ -44,6 +55,14 @@ If `resumes/search_profile.md` exists, read it alongside the resume. It's free-f
 When the user describes preferences in chat, capture them and **write `resumes/search_profile.md` using the Write tool** in the structured format from `resumes/README.md` (Must-haves / Interests / Deal-breakers / Salary). If the file already exists, read it first, then merge the new preferences in.
 
 If the user clearly doesn't want a profile and wants to skip, fine — fall back to resume-only inference and don't keep nagging.
+
+## Platforms
+
+- **LinkedIn:** mandatory. Verified every `/jobs` run via Step 0.
+- **Indeed:** optional. Opt-in via `/jobs setup` or `/jobs indeed-setup`. When enabled, `/jobs find` includes Indeed active search and recommendation harvest alongside LinkedIn and WebSearch. When disabled (default), `/jobs find` uses LinkedIn + WebSearch only.
+- Indeed discovery is **fail-soft**: CAPTCHA, login failure, or blocked pages skip Indeed and continue with LinkedIn + WebSearch. Indeed must never block the rest of discovery.
+- Indeed profile optimization is optional and confirmation-gated. Every public-facing profile edit requires explicit user approval before saving.
+- Never commit user resume content, search profile, Indeed profile details, recommendations, or account-specific data.
 
 ## Hard rules
 
@@ -72,7 +91,9 @@ When `Referral Needed=YES`:
 
 ## Unified command
 
-Use `/jobs` for all tracker operations. Sub-flows: `daily` · `check` · `find` · `add` · `outreach`
+Use `/jobs` for all tracker operations. Sub-flows: `setup` · `daily` · `check` · `find` · `add` · `outreach` · `indeed-setup`
+
+Recommended path: `/jobs setup` once, then `/jobs daily` for normal use. Treat `/jobs daily` as the orchestrator, not just another sub-command.
 
 ## Tone
 

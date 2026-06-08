@@ -55,14 +55,26 @@ Print: `Found <N> companies across <funds>` — then proceed.
 
 ## Step 3 — Sector pre-filter and prioritization
 
-Before spending Chrome time on each company, score them for relevance to the resume:
+Before spending Chrome time on each company, apply hard drops first, then score for relevance.
+
+### Hard drops (exclude entirely before scoring)
+- Consulting / IT services firms (Nagarro, Nearform, Cognizant, Infosys, Wipro, TCS, Accenture, Capgemini, HCL, etc.)
+- Crypto / Web3 companies
+- Pre-Series A or bootstrapped companies (check funding stage from portfolio page)
+- Companies in sectors with no engineering scale relevance (e.g. pure offline retail, NGOs)
+
+If uncertain whether a company is a deal-breaker, use WebSearch to verify before excluding.
+
+### Pre-filter scoring
 
 | Signal | Points |
 |---|---|
-| Company sector matches resume domain (inferred from resume skills + experience, e.g. payments engineer resume + fintech company) | +2 |
+| B2C consumer company at scale (fintech, e-commerce, edtech, health, developer tools) | +3 |
+| Large established B2B with strong engineering culture | +2 |
+| Company sector matches resume domain (payments, frontend-heavy product, developer tooling) | +2 |
 | Company is remote-friendly AND effective type filter includes Remote | +1 |
-| Company already has any row in `job_tracker.csv` | -2 (deprioritize; new roles may still exist) |
-| Company in a deal-breaker industry from search_profile.md | Exclude entirely |
+| Small B2B SaaS (Series B+, limited consumer surface) | +0 (keep but deprioritise) |
+| Company already has any row in `startup_tracker.csv` or `job_tracker.csv` | -2 (deprioritize) |
 
 Sort descending. Take **top 40** companies. If the pool is larger, tell the user:
 > "Found <N> companies in scope. Searching top 40 by sector relevance this run. Narrow with `--fund` or re-run to cover more."
@@ -121,18 +133,25 @@ From all collected roles, drop any that fail the effective filters:
 
 **Dedup**: Remove any result where Company + similar Role already exists in `job_tracker.csv`. Log skipped names.
 
+### Hard drops at role level (before scoring)
+- Role explicitly requires 7+ years of experience
+- Salary explicitly listed below 35 LPA (India) or $80K USD
+- Role is clearly non-engineering (sales, marketing, ops) — obvious mismatches
+
 **Score each role (0–10):**
 
 | Signal | Points |
 |---|---|
-| Title matches a target role exactly | +3 |
-| Title is adjacent (e.g. Staff vs Senior, Lead vs Principal) | +1.5 |
-| Location matches effective location filter | +2 |
-| Job type matches effective type filter | +2 |
-| Each keyword overlap with resume skills (cap +3) | +0.5 each |
+| Title matches target role exactly (Senior Software Engineer, Senior Frontend Engineer, SDE II/III) | +3 |
+| Title is adjacent (Staff, Lead, slightly different phrasing, same seniority) | +1.5 |
+| Location matches effective location filter (India / Remote / US-Europe) | +2 |
+| Job type matches effective type filter | +1 |
+| Each keyword overlap with resume skills: React, Next.js, TypeScript, Node.js, Performance, Design System, AWS, CI/CD, Redux, React Query, GenAI, Vite (cap +3) | +0.5 each |
 | Posted ≤14 days ago | +1 |
-| Salary at or above search_profile.md floor (skip rule if no floor set) | +1 |
-| Company sector matches resume domain | +0.5 |
+| Salary at or above 35 LPA / $80K USD | +1 |
+| B2C company at scale (consumer product, millions of users) | +1 |
+| Deep engineering signal in JD (performance, architecture, platform, infrastructure, scale) | +1 |
+| Large established B2B with strong eng culture | +0.5 |
 
 Drop roles where total score < 4. Sort descending. Take top 20.
 

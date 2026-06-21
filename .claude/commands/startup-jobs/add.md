@@ -49,6 +49,26 @@ Accept partial answers. Leave unknown fields blank — do not substitute "??" in
 
 ---
 
+## Step 2B — Deal-breaker check (run before writing anything)
+
+Before filling in any row, verify the company is not a deal-breaker. Use WebSearch to check funding stage and business model if not obvious.
+
+**Hard stops — warn the user, do NOT add to tracker:**
+- Consulting / IT services firm (Nagarro, Cognizant, Infosys, Wipro, TCS, Accenture, Capgemini, HCL, Nearform, etc.)
+- Crypto / Web3 company
+- Pre-Series A or bootstrapped startup
+- Role explicitly requires 7+ years of experience
+
+If triggered, tell the user:
+> "Skipping `<Company>` — matches a deal-breaker from your search profile (`<reason>`). Tell me to override if you still want to add it."
+
+Wait for explicit override before proceeding.
+
+**Yellow flags — add but note in Notes column:**
+- Small B2B SaaS (Series A, no consumer surface) → Notes: `"Small B2B — verify eng depth before applying"`
+- Salary listed below 35 LPA → Notes: `"Below 35 LPA salary floor"`
+- Role requires 6-7 years → Notes: `"Experience req borderline"`
+
 ## Step 3 — Dedup check
 
 Scan `startup_tracker.csv` for an existing row where Company AND Role both match (case-insensitive, partial match OK).

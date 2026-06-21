@@ -41,11 +41,15 @@ Skip if there's nothing manual to add. Continue to Step 4 automatically.
 
 ---
 
-## Step 4 — `/jobs outreach` (cold sweep on new HIGH companies that need a referral)
+## Step 4 — `/jobs outreach` (cold sweep on companies that need a referral)
 
-**Skip if:** no `Referral Status=Outreach Pending` companies with `Priority=HIGH`.
+**Skip if:** no `Referral Status=Outreach Pending` companies with `Priority=HIGH` or `Priority=MEDIUM` with deadline ≤ today+2.
 
-**Else:** for each new HIGH company that needs a referral, read `outreach.md` and run the sweep. The sweep does both: connection requests to 2nd-degree contacts ("Send without a note", per-company quota from Step 2C) AND first DMs to existing 1st-degree connections. Keep going across companies until LinkedIn pushes back (CAPTCHA / rate-limit notice) — at which point stop and tell the user.
+**Else:** run outreach for:
+1. All `Priority=HIGH` companies with `Referral Status=Outreach Pending` (regardless of deadline)
+2. All `Priority=MEDIUM` companies with `Referral Status=Outreach Pending` AND `Referral Deadline ≤ today+2`
+
+For each, read `outreach.md` and run the sweep. The sweep does both: connection requests to 2nd-degree contacts ("Send without a note", per-company quota from Step 2C) AND first DMs to existing 1st-degree connections. Keep going across companies until LinkedIn pushes back (CAPTCHA / rate-limit notice) — at which point stop and tell the user.
 
 Continue to Step 5 (commit) automatically.
 

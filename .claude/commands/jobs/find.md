@@ -31,78 +31,140 @@ If the search profile contradicts the resume (e.g. resume is full of ML, profile
 
 ## Step 2 — Search (Chrome + WebSearch in parallel)
 
-**LinkedIn via Chrome — for each target role, for each location:**
+Run ALL sources below in parallel. Combine results into one pool before scoring.
 
+---
+
+### 2A — LinkedIn (Chrome)
+
+For each target role + location:
 ```
 https://www.linkedin.com/jobs/search/?keywords=<role>&location=<location>&f_TPR=r604800&sortBy=DD
 ```
-
 (`f_TPR=r604800` = last 7 days · `sortBy=DD` = date posted descending)
 
-Read results. Extract per job: Company, Role, Location, Type (Remote/Hybrid/On-site), Salary (if shown), URL. Paginate up to 2 pages per search.
-
-**WebSearch sweep (run in parallel with the Chrome searches):**
-
-Build 3-5 queries combining target titles, top keywords, and locations inferred from the resume. Examples:
-- `"<target title>" jobs "<location>" site:linkedin.com OR site:indeed.com 2026`
-- `"<target title>" "<keyword>" "<keyword>" Remote jobs 2026`
-- `"<adjacent title>" "<keyword>" "<location>" 2026`
-
-Combine LinkedIn + WebSearch results into one pool.
-
-**Rate limiting:** If LinkedIn throttles or shows a CAPTCHA mid-search, stop and tell the user. Work with results collected so far, or re-run later in smaller batches.
+Paginate up to 2 pages per search. Extract per job: Company, Role, Location, Type, Salary (if shown), URL.
 
 ---
 
-## Step 2B — Indeed (only if enabled)
-
-Check `resumes/search_profile.md` for `Indeed: yes` (in the Platforms section) or `Discovery: enabled` (in the Indeed section). If neither is present, **skip this entire step** — Indeed is off.
-
-### Indeed Lane A — active search
-
-For each target role, for each location from the search plan:
+### 2B — Instahyre (Chrome)
 
 ```
-https://www.indeed.com/jobs?q=<role>&l=<location>&fromage=7&sort=date
+https://www.instahyre.com/search-jobs/?designation=<role>&location=<location>
 ```
-
-Also run each with `&l=Remote` (drop `radius`). `fromage=7` = posted in the last 7 days, `sort=date` = newest first. Paginate with `&start=10`, `&start=20` (up to 2 pages per search). Read each results page with `mcp__Claude_in_Chrome__get_page_text`. Extract Company, Role, Location, Salary (if shown), and the job URL (`/viewjob?jk=...` or `/jobs/view/...`).
-
-**Hybrid coverage:** the local-area pass already returns hybrid roles because they are posted under the office city. Do not drop a candidate for being "Hybrid" — if the user's search profile allows Hybrid or On-site for that area, it is in-scope.
-
-### Indeed Lane B — recommendation harvest (best-effort)
-
-After active search, glance at logged-in Indeed for any personalized module:
-
-- `https://www.indeed.com/`
-- Any visible "Jobs for you", "Because of your profile", "Profile match", "Based on your qualifications" module.
-
-Extract Company, Role, Location, Salary (if shown), URL, the match label, and tag source as `Indeed Recommendation`. Do not click apply. **Expect little or nothing here** — Indeed is sunsetting the desktop Recommended Jobs feature, so this lane is a bonus, not a dependency. If it is empty, move on.
-
-### Indeed Lane C — Career Scout ingestion (mobile, user-fed)
-
-Career Scout is Indeed's personalized recommender and it is **mobile-app only (iOS/Android)** — it cannot be driven from Chrome. Handle it as a user-in-the-loop source:
-
-- Prompt the user near the start of `/jobs find`: "Career Scout is mobile-only. If you've run it recently, paste any roles it surfaced (links, or company + title) and I'll fold them in." If they have nothing, skip and continue (fail-soft, never block).
-- When the user pastes Career Scout roles: tag each `Career Scout`. Resolve a working URL if they give only a name (via WebSearch). Run them through the same pipeline as every other source: dedup → company-site verification → score → add.
-- Career Scout picks count as a personalized recommendation for scoring (+1 bonus), but still must pass the minimum score.
-
-### Indeed pacing + fail-soft (REQUIRED)
-
-Indeed runs Cloudflare + DataDome, stricter than LinkedIn:
-
-- Go slow: one Indeed URL at a time, never fire all titles/pages in a burst.
-- **On ANY block** (CAPTCHA / "verify you are human" / 403 / blank page): STOP the current Indeed lane, do NOT try to solve it, log `Indeed: blocked after N results`, and continue the pipeline with LinkedIn + WebSearch + any already-collected Indeed results.
-- Indeed randomizes its HTML — extraction is flakier than LinkedIn. If a result's Company/Role is garbled or empty, drop it, do not guess.
-- **Fallback when Indeed is blocked or thin** — backfill via WebSearch for the same titles:
-  - `<title> jobs "<location>" site:indeed.com 2026`
-  - `<title> <top keyword> <top keyword> jobs 2026`
-
-Indeed is fail-soft: a blocked Indeed lane must NEVER stop LinkedIn results or the scoring/add steps from completing.
+Instahyre focuses on product companies and funded startups in India. Good signal-to-noise for Tushar's target. Extract same fields.
 
 ---
 
-Combine all results (LinkedIn + WebSearch + Indeed Search + Indeed Recommendation + Career Scout) into one pool. Keep source tags through scoring and tracker notes.
+### 2C — Naukri (WebSearch — do not navigate directly, it blocks automation)
+
+Use WebSearch:
+```
+site:naukri.com "senior software engineer" OR "senior frontend engineer" React TypeScript <location> 2026
+```
+Extract job titles, companies, and URLs from search results.
+
+---
+
+### 2D — Work at a Startup / YC jobs (Chrome)
+
+```
+https://www.workatastartup.com/companies?demographic=any&hasEquity=any&hasSalary=any&industry=any&interviewProcess=any&jobType=fulltime&layout=list-compact&role=eng&sortBy=created_desc&tab=any&usVisaNotRequired=any
+```
+YC-backed startups only. Scroll to load results. Extract company name, role, location, URL.
+
+---
+
+### 2E — Wellfound (Chrome)
+
+```
+https://wellfound.com/jobs
+```
+Filter by role: "Frontend Engineer" or "Software Engineer". Extract company, role, location, funding stage, URL.
+
+---
+
+### 2F — OnlyFrontendJobs (Chrome)
+
+```
+https://www.onlyfrontendjobs.com/jobs?tech_stack=React%2CNext.js%2CTypeScript%2CJavaScript%2CHTML%2CCSS%2CTailwind+CSS%2CSCSS%2FSass%2CREST+APIs%2CRedux%2CReact+Query%2CWebpack%2CVite%2CPlaywright%2CAWS%2CCI%2FCD%2CGit%2CGraphQL%2CNode.js%2CExpress%2CTesting+Library%2CVercel%2CFirebase%2CSupabase%2CStorybook&job_type=Remote&experience_level=Mid
+```
+Pre-filtered for Tushar's exact stack (React, Next.js, TypeScript, Redux, React Query, Vite, AWS, CI/CD, Node.js). Remote + Mid-level filter already applied. High precision — prioritise these results.
+
+---
+
+### 2G — Hacker News "Who is Hiring?" (WebSearch)
+
+Direct from founders, no recruiters, high signal. Use WebSearch:
+```
+site:hnhiring.com React TypeScript "senior" frontend 2026
+```
+Also check: `https://hnhiring.com/technologies/react` — pre-filtered by React.
+Extract company, role, location, URL. Prefer posts from current month.
+
+---
+
+### 2H — levels.fyi/jobs (Chrome)
+
+Salary-transparent listings from well-funded companies. Navigate to:
+```
+https://www.levels.fyi/jobs?jobType=fulltime&roles=Frontend+Engineer&roles=Software+Engineer&locations=India&locations=Remote
+```
+Strong signal for compensation benchmarking. Extract company, role, salary, location, URL.
+
+---
+
+### 2I — Cutshort (Chrome)
+
+Strong for India product companies and funded startups. Navigate to:
+```
+https://cutshort.io/jobs/frontend-developer-jobs
+```
+Filter by React / TypeScript. Extract company, role, location, funding stage, URL.
+
+---
+
+### 2J — arc.dev (WebSearch)
+
+US-paying remote roles for engineers in India. Use WebSearch:
+```
+site:arc.dev "senior frontend engineer" OR "senior software engineer" React TypeScript remote 2026
+```
+Good for roles that pay US/Europe salaries to remote India engineers. Extract company, role, salary, URL.
+
+---
+
+### 2K — RemoteOK (WebSearch)
+
+Async remote startups, often US/Europe-based. Use WebSearch:
+```
+site:remoteok.com react typescript senior frontend engineer 2026
+```
+Extract company, role, salary (often listed), URL.
+
+---
+
+### 2L — Peerlist Jobs (Chrome)
+
+Good for Indian tech product companies and funded startups. Navigate to:
+```
+https://peerlist.io/jobs?role=Frontend+Engineer&stack=React
+```
+Extract company, role, location, URL.
+
+---
+
+### 2M — WebSearch sweep
+
+Build 3-5 queries combining target titles, top keywords, and locations:
+- `"senior software engineer" React TypeScript "<location>" site:linkedin.com OR site:wellfound.com 2026`
+- `"senior frontend engineer" "Next.js" "TypeScript" India Remote jobs 2026`
+- `"senior software engineer" React B2C funded startup India 2026`
+- `"senior frontend engineer" React TypeScript remote "India" site:greenhouse.io OR site:lever.co 2026`
+
+---
+
+**Rate limiting:** If any site throttles or shows a CAPTCHA, skip it and continue with others. Report what was skipped at the end.
 
 ---
 
@@ -110,34 +172,30 @@ Combine all results (LinkedIn + WebSearch + Indeed Search + Indeed Recommendatio
 
 **Dedup:** Remove any result where Company + similar Role already exists in `job_tracker.csv`. Track skipped names to report at the end.
 
-**Score each job (0-12) against the search plan from Step 1:**
+### Hard drops (apply BEFORE scoring — do not surface these at all)
 
-- Title matches a target role exactly: +3
-- Title is adjacent (e.g. "Staff" instead of "Senior", or "Analyst" vs "Scientist" with overlapping skills): +1.5
-- Location matches a profile-allowed location OR is Remote (when profile allows Remote): +2
-- Each keyword overlap (resume keywords ∪ search profile interests): +0.5 (cap at +3)
-- Posted ≤7 days ago: +1
-- Salary at or above the profile's stated floor (skip this rule if no floor was given): +1
-- **Search profile match for company stage / size / domain** (e.g. profile says "climate tech", job is at a climate-tech company): +1
-- Indeed personalized recommendation / profile-match label / Career Scout source: +1
-- Matching company-site posting verified (Indeed candidate confirmed live on company careers page): +1
+- Consulting firms or agencies: Nagarro, Nearform, Cognizant, Infosys, Wipro, TCS, Accenture, Capgemini, HCL, Mphasis, LTIMindtree, and similar body-shop / IT services firms
+- Crypto / Web3 companies
+- Small B2B SaaS: pre-Series B, no consumer surface, limited engineering scale
+- Bootstrapped or pre-Series A companies
+- Roles with a hard 7+ year experience requirement explicitly stated
+- Salary explicitly listed below 35 LPA (India) or below $80K USD (US/Europe)
 
-**Hard exclusions from the search profile** (deal-breakers like "no crypto", "no consulting"): drop the job entirely BEFORE scoring. Don't surface it in the results table.
+If uncertain whether a company is a deal-breaker, use WebSearch to check funding stage and business model before deciding.
 
-**Company-site verification for Indeed candidates:**
+### Scoring (0-10)
 
-For every Indeed candidate that survives the dedup:
-- Search WebSearch for the same Company + Role on the company careers page.
-- If a matching live company posting exists, replace the URL with the company apply URL and add `Verified company site from Indeed discovery` to Notes.
-- If no direct posting is found but the Indeed posting is live and credible, keep the Indeed URL and add `Indeed-only posting; verify before apply` to Notes. Set `Apply Via=Indeed`.
-- If the company site shows the role closed/missing and the Indeed post looks stale, drop it.
-
-**Indeed recommendation rules:**
-- Treat recommendations as signal, not truth. Indeed can recommend noisy, stale, sponsored, or off-target jobs.
-- The +1 scoring bonus helps but never rescues a weak or off-target JD.
-
-**Source tags to preserve in tracker Notes:**
-- `Indeed Search` / `Indeed Recommendation` / `Career Scout` / `Verified company site` / `Indeed-only posting; verify before apply`
+| Signal | Points |
+|---|---|
+| Title matches target role exactly (Senior Software Engineer, Senior Frontend Engineer, SDE II/III) | +3 |
+| Title is adjacent (Lead, Staff, or slightly different phrasing with same seniority) | +1.5 |
+| Location matches India / Remote / US-Europe remote open to India | +2 |
+| Each keyword overlap from resume (React, Next.js, TypeScript, Node.js, Performance, Design System, AWS, CI/CD, Redux, React Query, GenAI, Vite) | +0.5 each, cap +3 |
+| Posted ≤7 days ago | +1 |
+| Salary at or above 35 LPA / $80K USD | +1 |
+| B2C company at scale (Swiggy, CRED, Zepto, Razorpay, Meesho, PhonePe, Groww, Zomato, Flipkart, Airbnb, Uber, etc.) | +1 |
+| Deep engineering signal in JD (performance, architecture, platform, infrastructure, scale mentioned) | +1 |
+| Large established B2B with strong eng culture (Postman, BrowserStack, Freshworks, Chargebee, Atlassian, Notion, Figma, Linear, etc.) | +0.5 |
 
 Drop jobs where total score < 4. Sort descending. Take top 20.
 

@@ -18,21 +18,25 @@ If multiple resumes are present, read all of them and use the union. Never inven
 
 If `resumes/` is empty (only the README), stop the flow and tell the user to drop their resume in.
 
-## Search profile (optional) — the source of truth about WHAT they want
+## Search profile — MANDATORY, read on every flow
 
-Look for `resumes/search_profile.md`. This is an OPTIONAL free-form file where the user writes their specific job-search preferences: must-haves, deal-breakers, interest areas, salary floors, location constraints, company-size preferences, anything that's not on the resume.
+`resumes/search_profile.md` is the source of truth for what the user wants. **Always read it at the start of every flow, without exception.** It overrides resume-inferred defaults on every conflict.
 
-If it exists:
-- Read it as plain prose. No structured schema is enforced — it can be bullets, paragraphs, mixed.
-- Treat it as **higher-priority signal than the resume** when there's a conflict. The resume says what the user *can* do; the search profile says what they *want* to do.
-- Examples of how it shapes flows:
-  - "Remote only" → drop on-site results from `/jobs find`, even if the resume has a city in the contact line.
-  - "$200K minimum" → boost or filter on salary in the score.
-  - "Climate tech" → add to the keyword pool for searches and scoring.
-  - "No crypto" → exclude matching jobs entirely.
-  - "Senior IC, no people management" → drop manager-track titles.
+Apply it as follows:
+- **Company type** — B2C at scale = preferred; large established B2B = acceptable; small B2B / agencies / consulting = hard drop before scoring.
+- **Salary floor** — 35 LPA base (India). Drop any role where salary is explicitly listed below this. For US/Europe roles use equivalent ($80K+ USD). Apply +1 to score for roles at or above floor.
+- **Locations** — India (Gurugram, Bangalore, Delhi NCR, Mumbai, Remote) + US/Europe remote roles open to India candidates.
+- **Funding** — Series B minimum for startups; established unicorns / public companies are fine. Drop pre-Series A and bootstrapped.
+- **Deal-breakers (hard drop, no scoring):**
+  - Consulting firms or agencies (Nagarro, Nearform, Cognizant, Infosys, Wipro, TCS, Accenture, Capgemini, and similar)
+  - Crypto / Web3 companies
+  - Small B2B SaaS (pre-Series B, no consumer surface, limited scale)
+  - Bootstrapped or pre-Series A
+  - Roles with a hard 7+ year experience requirement
+- **Deep engineering signal** — roles at high-scale companies where the job description mentions performance, architecture, platform, or infrastructure work → +1 to score.
+- **B2C scale boost** — company is clearly consumer-facing at scale (Swiggy, CRED, Zepto, Razorpay, Meesho, PhonePe, Groww, Zomato, Flipkart, Uber, Airbnb, etc.) → +1 to score.
 
-If it doesn't exist, the search profile is inferred entirely from the resume. Don't tell the user this is missing — the file is optional.
+If `search_profile.md` is missing, infer from the resume and these defaults. Do not ask the user — just proceed.
 
 ### Platform configuration
 
@@ -106,7 +110,10 @@ Stages 4 and 5 are handled by the user manually (this repo doesn't automate repl
 
 **NEVER use em-dashes (—) in any user-facing message: LinkedIn DMs, anything sent to a contact.** Use a comma, period, parentheses, semicolon, or split into two sentences instead. This is a hard rule. Em-dashes are a tell of AI-written text.
 
-**Fit summaries / background paragraphs are written in THIRD PERSON.** The greeting stays first-person ("Hi <name>,"), but the background paragraph shifts to third person ("She is a senior data scientist..."). The signature is the user's first name. This applies to outreach DMs only. The third-person sentence is built from the user's resume in `resumes/` — see `outreach.md` for the construction recipe.
+**Fit summaries / background paragraphs are written in THIRD PERSON.** The greeting stays first-person ("Hi <name>,"), but the background paragraph shifts to third person. The signature is the user's first name. This applies to outreach DMs only. The third-person sentence is built from the user's resume in `resumes/` — see `outreach.md` for the construction recipe.
+
+Example pitch for Tushar (build a similar sentence from the resume each time, don't hardcode):
+> "Tushar is a Senior Software Engineer at Procol with 4+ years in frontend architecture, React/Next.js/TypeScript, and performance optimization at scale."
 
 This rule does NOT apply to:
 - Internal documentation, tracker notes, contacts.md
